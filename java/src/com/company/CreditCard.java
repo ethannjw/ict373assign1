@@ -1,7 +1,8 @@
 package com.company;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.time.LocalDate;
-import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -10,7 +11,7 @@ public class CreditCard extends PaymentMethod {
     private LocalDate expiry;
 
     // Other functional attributes
-    private SimpleDateFormat formatter = new SimpleDateFormat("MM-yyyy");
+    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-yyyy");
     private Pattern ccFormat = Pattern.compile("^(\\d{4}[ -]?){4}$");
 
     public CreditCard() {
@@ -19,7 +20,7 @@ public class CreditCard extends PaymentMethod {
         this.setExpiry(LocalDate.now());
     }
     public CreditCard(String paymentName, String creditCardNumber, LocalDate expiry) {
-        super();
+        super(paymentName);
         this.setCreditCardNumber(creditCardNumber);
         this.setExpiry(expiry);
     }
@@ -51,10 +52,8 @@ public class CreditCard extends PaymentMethod {
 
     @Override
     public String toString() {
-        return super.toString().concat("CreditCard{" +
-                "creditCardNumber='" + creditCardNumber + '\'' +
-                ", expiry=" + expiry +
-                '}');
+        return super.toString().concat("Credit Card Number: " + creditCardNumber + '\n' +
+                "Expiry: " + expiry.format(formatter) + '\n');
     }
 }
 

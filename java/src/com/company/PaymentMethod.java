@@ -18,8 +18,6 @@ public class PaymentMethod {
 
     @Override
     public String toString() {
-        return "PaymentMethod{" +
-                "paymentName='" + paymentName + '\'' +
-                '}';
+        return "Payer Name: " + paymentName + '\n';
     }
 }

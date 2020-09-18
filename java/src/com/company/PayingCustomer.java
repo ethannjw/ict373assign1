@@ -84,7 +84,7 @@ public class PayingCustomer {
         String str = "PayingCustomer: \n" +
                 "payerName:" + payerName + '\n' +
                 "payerEmail: " + payerEmail + '\n' +
-                "paymentMethod: " + paymentMethod + '\n' +
+                "paymentMethod: \n" + paymentMethod + '\n' +
                 "associateCustomers: \n";
         for (Customer c : this.associateCustomer) {
             str = str.concat(c.getName());

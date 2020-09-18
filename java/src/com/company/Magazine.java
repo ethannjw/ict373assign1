@@ -58,7 +58,7 @@ public class Magazine {
     @Override
     public String toString() {
         String str = "Magazine: \n" +
-                "magazineWeeklyCost: " + magazineWeeklyCost + '\n' +
+                "magazineWeeklyCost: $" + magazineWeeklyCost + '\n' +
                 "Customers: " + '\n';
         for (Customer c : this.customer) {
             str = str.concat(c.getName());
