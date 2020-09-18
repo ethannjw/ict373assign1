@@ -9,37 +9,66 @@ public class Customer {
     private PayingCustomer payingCustomer;
 
     public Customer() {
-        this.name = "";
-        this.email = "";
-        this.supplements = new ArrayList<Supplement>();
-        this.payingCustomer = new PayingCustomer();
+        this.setName("");
+        this.setEmail("");
+        this.setSupplements(new ArrayList<Supplement>());
+        this.setPayingCustomer(new PayingCustomer());
+    }
+
+    public Customer(String name, String email) {
+        this.setName(name);
+        this.setEmail(email);
+        this.setSupplements(new ArrayList<Supplement>());
+        this.setPayingCustomer(new PayingCustomer());
     }
 
     public Customer(String name, String email, PayingCustomer payer) {
-        this.name = name;
-        this.email = email;
-        this.supplements = new ArrayList<Supplement>();
-        this.payingCustomer = payer;
+        this.setName(name);
+        this.setEmail(email);
+        this.setSupplements(new ArrayList<Supplement>());
+        this.setPayingCustomer(payer);
     }
 
-    public void setName(String name) {
+    public Customer(String name, String email, PayingCustomer payer, ArrayList<Supplement> supplements) {
+        this.setName(name);
+        this.setEmail(email);
+        this.setSupplements(supplements);
+        this.setPayingCustomer(payer);
+    }
+
+    public Customer(String name, String email, PayingCustomer payer, Supplement supplements) {
+        this.setName(name);
+        this.setEmail(email);
+        this.setSupplements(supplements);
+        this.setPayingCustomer(payer);
+    }
+
+    public Boolean setName(String name) {
         this.name = name;
+        return true;
     }
 
     public String getName() {
         return this.name;
     }
 
-    public void setEmail(String email) {
+    public Boolean setEmail(String email) {
         this.email = email;
+        return true;
     }
 
     public String getEmail() {
         return this.email;
     }
 
-    public void setSupplements(ArrayList<Supplement> supplements) {
+    public Boolean setSupplements(ArrayList<Supplement> supplements) {
         this.supplements = supplements;
+        return true;
+    }
+
+    public Boolean setSupplements(Supplement supplements) {
+        this.supplements.add(supplements);
+        return true;
     }
 
     public ArrayList<Supplement> getSupplements() {
@@ -50,18 +79,19 @@ public class Customer {
         return this.payingCustomer;
     }
 
-    public void setPayingCustomer(PayingCustomer payingCustomer) {
+    public Boolean setPayingCustomer(PayingCustomer payingCustomer) {
         this.payingCustomer = payingCustomer;
+        return true;
     }
 
     public String toString() {
         String str = ("Customer: " + this.name + "\n" +
                 "Email: " + this.email + "\n" +
-                "Payer: " + this.payingCustomer + "\n" +
-                "Supplements: ");
+                "Payer: " + this.payingCustomer.getPayerName() + "\n" +
+                "Supplements: \n");
         for (Supplement s : this.supplements) {
-            str = (str + s.toString());
-            str = (str + "\n");
+            str = str.concat(s.toString());
+            str = str.concat("\n");
         }
         return str;
     }

@@ -3,24 +3,52 @@ package com.company;
 import java.util.ArrayList;
 
 public class Magazine {
+    private String magName;
     private Double magazineWeeklyCost;
-    private ArrayList<Customer> customer;
+    private ArrayList<Customer> customer = new ArrayList<Customer>();
 
     public Magazine() {
-        this.magazineWeeklyCost = 0.0;
-        this.customer = new ArrayList<Customer>();
+        this.setMagName("");
+        this.setMagazineWeeklyCost(0.0);
     }
 
-    public void setCustomer(ArrayList<Customer> customer) {
+    public Magazine(String magName, Double magazineWeeklyCost, ArrayList<Customer> customer) {
+        this.setMagName(magName);
+        this.setMagazineWeeklyCost(magazineWeeklyCost);
+        this.setCustomer(customer);
+    }
+
+    public Magazine(String magName, Double magazineWeeklyCost, Customer customer) {
+        this.setMagazineWeeklyCost(magazineWeeklyCost);
+        this.setCustomer(customer);
+    }
+
+    public String getMagName() {
+        return magName;
+    }
+
+    public Boolean setMagName(String magName) {
+        this.magName = magName;
+        return true;
+    }
+
+    public Boolean setCustomer(ArrayList<Customer> customer) {
         this.customer = customer;
+        return true;
+    }
+
+    public Boolean setCustomer(Customer customer) {
+        this.customer.add(customer);
+        return true;
     }
 
     public ArrayList<Customer> getCustomer() {
         return this.customer;
     }
 
-    public void setMagazineWeeklyCost(Double magazineWeeklyCost) {
+    public Boolean setMagazineWeeklyCost(Double magazineWeeklyCost) {
         this.magazineWeeklyCost = magazineWeeklyCost;
+        return true;
     }
 
     public Double getMagazineWeeklyCost() {
@@ -29,9 +57,13 @@ public class Magazine {
 
     @Override
     public String toString() {
-        return "Magazine{" +
-                "magazineWeeklyCost=" + magazineWeeklyCost +
-                ", customer=" + customer +
-                '}';
+        String str = "Magazine: \n" +
+                "magazineWeeklyCost: " + magazineWeeklyCost + '\n' +
+                "Customers: " + '\n';
+        for (Customer c : this.customer) {
+            str = str.concat(c.getName());
+            str = str.concat("\n");
+        }
+        return str;
     }
 }

@@ -4,8 +4,13 @@ public class Supplement {
     private String name;
     private Double supplementWeeklyCost;
     public Supplement() {
-        this.name = "";
-        this.supplementWeeklyCost = 0.0;
+        this.setName("");
+        this.setSupplementWeeklyCost(0.0);
+    }
+
+    public Supplement(String name, Double supplementWeeklyCost) {
+        this.setName(name);
+        this.setSupplementWeeklyCost(supplementWeeklyCost);
     }
 
     public String getName() {
@@ -24,5 +29,12 @@ public class Supplement {
     public Boolean setSupplementWeeklyCost(Double supplementWeeklyCost) {
         this.supplementWeeklyCost = supplementWeeklyCost;
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return "Supplement: " + name + '\n' +
+                "Cost: $" + supplementWeeklyCost +
+                "\n";
     }
 }
