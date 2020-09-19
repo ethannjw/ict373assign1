@@ -87,7 +87,7 @@ public class PayingCustomer {
                 "paymentMethod: \n" + paymentMethod + '\n' +
                 "associateCustomers: \n";
         for (Customer c : this.associateCustomer) {
-            str = str.concat(c.getName());
+            str = str.concat(c.getCustName());
             str = str.concat("\n");
         }
         return str;

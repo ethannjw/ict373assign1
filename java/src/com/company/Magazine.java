@@ -56,14 +56,18 @@ public class Magazine {
         this.setCustomer(customer);
     }
 
+    // magId
+    public int getMagId() {
+        return magId;
+    }
+
     // magName
     public String getMagName() {
         return magName;
     }
 
-    public Boolean setMagName(String magName) {
+    public void setMagName(String magName) {
         this.magName = magName;
-        return true;
     }
 
     // magWeek
@@ -106,6 +110,19 @@ public class Magazine {
         return this.customer;
     }
 
+    public boolean remCustomer(int custId){
+        return this.customer.removeIf(c -> c.getCustId() == custId);
+    }
+
+    public boolean remCustomer(Customer customer){
+        try {
+            this.customer.remove(customer);
+            return true;
+        } catch (IndexOutOfBoundsException e) {
+            System.out.println("Error removing customer: " + customer.getCustName() + '\n');
+            return false;
+        }
+    }
     @Override
     public String toString() {
         String str = "Magazine: \n" +
@@ -116,7 +133,7 @@ public class Magazine {
                 "magazine Weekly Cost: $" + magWeeklyCost + '\n' +
                 "Customers: " + '\n';
         for (Customer c : this.customer) {
-            str = str.concat(c.getName());
+            str = str.concat(c.getCustName());
             str = str.concat("\n");
         }
         return str;

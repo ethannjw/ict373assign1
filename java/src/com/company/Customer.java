@@ -1,74 +1,77 @@
 package com.company;
 
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Customer {
-    private String name;
-    private String email;
-    private ArrayList<Supplement> supplements;
-    private PayingCustomer payingCustomer;
+    private static AtomicInteger nextId = new AtomicInteger();
+    private int custId;
+    private String custName;
+    private String custEmail;
+    private ArrayList<Supplement> supplements = new ArrayList<Supplement>();
+    private PayingCustomer payingCustomer = new PayingCustomer();
 
     public Customer() {
-        this.setName("");
-        this.setEmail("");
-        this.setSupplements(new ArrayList<Supplement>());
-        this.setPayingCustomer(new PayingCustomer());
+        this.custId = nextId.incrementAndGet();
+        this.setCustName("");
+        this.setCustEmail("");
     }
 
-    public Customer(String name, String email) {
-        this.setName(name);
-        this.setEmail(email);
-        this.setSupplements(new ArrayList<Supplement>());
-        this.setPayingCustomer(new PayingCustomer());
+    public Customer(String custName, String custEmail) {
+        this.custId = nextId.incrementAndGet();
+        this.setCustName(custName);
+        this.setCustEmail(custEmail);
     }
 
-    public Customer(String name, String email, PayingCustomer payer) {
-        this.setName(name);
-        this.setEmail(email);
-        this.setSupplements(new ArrayList<Supplement>());
+    public Customer(String custName, String custEmail, PayingCustomer payer) {
+        this.custId = nextId.incrementAndGet();
+        this.setCustName(custName);
+        this.setCustEmail(custEmail);
         this.setPayingCustomer(payer);
     }
 
-    public Customer(String name, String email, PayingCustomer payer, ArrayList<Supplement> supplements) {
-        this.setName(name);
-        this.setEmail(email);
+    public Customer(String custName, String custEmail, PayingCustomer payer, ArrayList<Supplement> supplements) {
+        this.custId = nextId.incrementAndGet();
+        this.setCustName(custName);
+        this.setCustEmail(custEmail);
         this.setSupplements(supplements);
         this.setPayingCustomer(payer);
     }
 
-    public Customer(String name, String email, PayingCustomer payer, Supplement supplements) {
-        this.setName(name);
-        this.setEmail(email);
+    public Customer(String custName, String custEmail, PayingCustomer payer, Supplement supplements) {
+        this.custId = nextId.incrementAndGet();
+        this.setCustName(custName);
+        this.setCustEmail(custEmail);
         this.setSupplements(supplements);
         this.setPayingCustomer(payer);
     }
 
-    public Boolean setName(String name) {
-        this.name = name;
-        return true;
+    public int getCustId() {
+        return this.custId;
     }
 
-    public String getName() {
-        return this.name;
+    public void setCustName(String name) {
+        this.custName = name;
     }
 
-    public Boolean setEmail(String email) {
-        this.email = email;
-        return true;
+    public String getCustName() {
+        return this.custName;
     }
 
-    public String getEmail() {
-        return this.email;
+    public void setCustEmail(String custEmail) {
+        this.custEmail = custEmail;
     }
 
-    public Boolean setSupplements(ArrayList<Supplement> supplements) {
+    public String getCustEmail() {
+        return this.custEmail;
+    }
+
+    public void setSupplements(ArrayList<Supplement> supplements) {
         this.supplements = supplements;
-        return true;
     }
 
-    public Boolean setSupplements(Supplement supplements) {
+    public void setSupplements(Supplement supplements) {
         this.supplements.add(supplements);
-        return true;
     }
 
     public ArrayList<Supplement> getSupplements() {
@@ -79,14 +82,13 @@ public class Customer {
         return this.payingCustomer;
     }
 
-    public Boolean setPayingCustomer(PayingCustomer payingCustomer) {
+    public void setPayingCustomer(PayingCustomer payingCustomer) {
         this.payingCustomer = payingCustomer;
-        return true;
     }
 
     public String toString() {
-        String str = ("Customer: " + this.name + "\n" +
-                "Email: " + this.email + "\n" +
+        String str = ("Customer: " + this.custName + "\n" +
+                "Email: " + this.custEmail + "\n" +
                 "Payer: " + this.payingCustomer.getPayerName() + "\n" +
                 "Supplements: \n");
         for (Supplement s : this.supplements) {
