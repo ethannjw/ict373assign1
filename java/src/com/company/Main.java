@@ -17,17 +17,24 @@ public class Main {
         // Declare a customer
         Customer cust1 = new Customer("John Lim", "john.lim@email.com");
         cust1.setSupplements(supps);
-        // Declare a payment method
+        // Declare payment method
         CreditCard cc1 = new CreditCard("John Lim", "1234 5678 9102 1234", LocalDate.now());
         // Declare a payer
         PayingCustomer payer1 = new PayingCustomer("John Doe", "john.doe@email.com", cc1, cust1);
         cust1.setPayingCustomer(payer1);
 
         // Declare new Magazine
-        Magazine mag1 = new Magazine("Daily News", 12.6, cust1);
+        ArrayList<Magazine> mags = new ArrayList<Magazine>();
+        mags.add(new Magazine("Daily News", 2, "This is an email", 12.3));
+        Magazine mag2 = new Magazine("Daily Gossips", 1, "This is an email", 12.3);
+        mags.add(mag2);
+        Magazine mag3 = new Magazine("Daily Shots", 3, "This is an email", 12.3);
+        mags.add(mag3);
+        Magazine mag4 = new Magazine("Daily Jumps", 4, "This is an email", 12.3);
+        mags.add(mag4);
 
-        System.out.println(mag1);
-        System.out.println(cust1);
-        System.out.println(payer1);
+
+        System.out.println(mags);
+
     }
 }
