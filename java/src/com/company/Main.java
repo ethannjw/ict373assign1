@@ -26,14 +26,14 @@ public class Main {
         // Declare new Magazine
         ArrayList<Magazine> mags = new ArrayList<Magazine>();
         mags.add(new Magazine("Daily News", 2, "This is an email", 12.3));
-        Magazine mag2 = new Magazine("Daily Gossips", 1, "This is an email", 12.3);
+        Magazine mag2 = new Magazine("Daily Gossips", 1, "This is the email text from Daily Gossips", 12.3);
         mags.add(mag2);
-        Magazine mag3 = new Magazine("Daily Shots", 3, "This is an email", 12.3);
+        Magazine mag3 = new Magazine("Daily Shots", 3, "This is an email from Daily Shots", 12.3);
         mags.add(mag3);
-        Magazine mag4 = new Magazine("Daily Jumps", 4, "This is an email", 12.3);
+        Magazine mag4 = new Magazine("Daily Jumps", 4, "This is an email from Daily Jumps", 12.3);
         mags.add(mag4);
 
-
+        System.out.println(supps);
         System.out.println(mags);
 
     }
