@@ -1,7 +1,6 @@
-package com.company;
-
 public class PaymentMethod {
     private String paymentName;
+
     public PaymentMethod() {
         this.setPaymentName("");
     }

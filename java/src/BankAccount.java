@@ -1,5 +1,3 @@
-package com.company;
-
 public class BankAccount extends PaymentMethod {
     private String accountNumber;
     private String bank;

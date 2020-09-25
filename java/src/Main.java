@@ -1,5 +1,3 @@
-package com.company;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 

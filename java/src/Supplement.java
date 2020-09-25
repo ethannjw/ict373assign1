@@ -1,5 +1,3 @@
-package com.company;
-
 public class Supplement {
     private String name;
     private Double supplementWeeklyCost;
