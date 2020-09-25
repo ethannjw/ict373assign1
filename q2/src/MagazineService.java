@@ -70,14 +70,12 @@ public class MagazineService {
 
     public void printWeeklyEmail() {
         /**
-         * Prints out the weekly email for a particular customer
+         * Prints out the weekly email for all magazine and customer
          * @param AssociateCustomer customer
-         * @param int magWeek
          */
-        String currentMagName = "";
         //loop through all magazines
         for (Magazine m : this.mags) {
-
+            //loop through all customers
             for (AssociateCustomer customer : this.magCustomers) {
                 System.out.println("Customers name: " + customer.getCustName());
                 System.out.println("Your magazine: " + m.getMagName() + " is ready.");
@@ -90,6 +88,35 @@ public class MagazineService {
 
                 }
             }
+            System.out.println("\n");
+        }
+    }
+
+    public void printWeeklyEmail(int magId) {
+        /**
+         * Prints out the weekly email for all magazine and customer
+         * @param AssociateCustomer customer
+         * @param int magWeek
+         */
+        String magName = "";
+        try {
+            magName = mags.get(magId).getMagName();
+        } catch (IndexOutOfBoundsException e) {
+            System.out.println("Unable to find specified Magazine");
+            return;
+        }
+        for (AssociateCustomer customer : this.magCustomers) {
+            System.out.println("Customers name: " + customer.getCustName());
+            System.out.println("Your magazine: " + magName + " is ready.");
+            System.out.println("Along with your supplements: ");
+
+            // for each index in customer.supplement
+            for (Integer idx : customer.getSupplements()) {
+                // for each available supplement
+                System.out.println(this.supplements.get(idx).getName());
+
+            }
+            System.out.println("\n");
         }
     }
 

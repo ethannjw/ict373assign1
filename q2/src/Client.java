@@ -32,7 +32,7 @@ public class Client {
          * Generates a new MagazineService with 7 customers and 4 supplements
          * @return MagazineService
         */
-        Magazine mag1 = new Magazine("Magazine", 1, 12.20);
+        Magazine mag1 = new Magazine("Magazine", 12.20);
         // Part A: Construct Magazine
         MagazineService s = new MagazineService();
         s.setMags(mag1);
@@ -88,6 +88,11 @@ public class Client {
     public void printWeeklyEmails() {
         // Part C
         magService.printWeeklyEmail();
+    }
+
+    public void printWeeklyEmails(int magId) {
+        // Part C
+        magService.printWeeklyEmail(magId);
     }
 
     public static void printMonthlyEmails() {

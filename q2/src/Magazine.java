@@ -4,7 +4,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class Magazine {
     private static AtomicInteger nextId = new AtomicInteger();
     private int magId;
-    private int magWeek;
     private String magName;
     private EmailContent magEmailContent;
     private double magWeeklyCost;
@@ -14,16 +13,9 @@ public class Magazine {
         this.setMagName("");
     }
 
-    public Magazine(String magName, int magWeek) {
+    public Magazine(String magName, double magWeeklyCost) {
         this.magId = nextId.incrementAndGet();
         this.setMagName(magName);
-        this.setMagWeek(magWeek);
-    }
-
-    public Magazine(String magName, int magWeek, double magWeeklyCost) {
-        this.magId = nextId.incrementAndGet();
-        this.setMagName(magName);
-        this.setMagWeek(magWeek);
     }
 
     // magId
@@ -38,15 +30,6 @@ public class Magazine {
 
     public void setMagName(String magName) {
         this.magName = magName;
-    }
-
-    // magWeek
-    public int getMagWeek() {
-        return magWeek;
-    }
-
-    public void setMagWeek(int magWeek) {
-        this.magWeek = magWeek;
     }
 
     // magEmailContent
@@ -72,7 +55,6 @@ public class Magazine {
         String str = "Magazine: \n" +
                 "magazine ID: " + magId + '\n' +
                 "magazine Name: " + magName + '\n' +
-                "magazine Week: " + magWeek + '\n' +
                 "magezine Email Content: " + magEmailContent + '\n' +
                 "magazine Weekly Cost: $" + magWeeklyCost + '\n' +
                 "Customers: " + '\n';

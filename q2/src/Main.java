@@ -7,7 +7,7 @@ public class Main {
 
         Client client = new Client();
         client.displayStudentDetails();
-        client.printWeeklyEmails();
+        client.printWeeklyEmails(0);
 
 
 
