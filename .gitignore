@@ -2,7 +2,7 @@
 *.class
 
 # Binary folder
-java/out
+q2/out
 
 # Log file
 *.log

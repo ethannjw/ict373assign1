@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project default="run" name="ict737assign1">
 	<target name="run" depends="compile">
-		<java classname="com.company.Main">
-			<classpath path="./java/out"/>
+		<java classname="Main">
+			<classpath path="q2/out"/>
 		</java>
 	</target>
 	<target name="compile">
-		<javac includeantruntime="false" srcdir="./java/src" destdir="./java/out" />
+		<javac includeantruntime="false" srcdir="./q2/src" destdir="q2/out" />
 	</target>
 </project>
