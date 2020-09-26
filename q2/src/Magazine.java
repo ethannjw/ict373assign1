@@ -16,6 +16,7 @@ public class Magazine {
     public Magazine(String magName, double magWeeklyCost) {
         this.magId = nextId.incrementAndGet();
         this.setMagName(magName);
+        this.setMagWeeklyCost(magWeeklyCost);
     }
 
     // magId

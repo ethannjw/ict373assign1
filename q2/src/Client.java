@@ -1,4 +1,13 @@
-import java.rmi.NoSuchObjectException;
+
+/**
+ * @title Client
+ * @desc This class is for testing the Magazine Service system and all of its classes.
+ * @filename Client.java
+ * @version 0.1
+ * @date 04/10/2020
+ * @author Ethan Ng
+ */
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,10 +41,16 @@ public class Client {
          * Generates a new MagazineService with 7 customers and 4 supplements
          * @return MagazineService
         */
-        Magazine mag1 = new Magazine("Magazine", 12.20);
         // Part A: Construct Magazine
+        Magazine mag1 = new Magazine("Programming Magazine", 12.20);
+        Magazine mag2 = new Magazine("Cooking Magazine", 12.20);
+        Magazine mag3 = new Magazine("Exercise Magazine", 12.20);
+        Magazine mag4 = new Magazine("Empty Magazine", 12.20);
         MagazineService s = new MagazineService();
         s.setMags(mag1);
+        s.setMags(mag2);
+        s.setMags(mag3);
+        s.setMags(mag4);
         Supplement sup1 = new Supplement("Java Rocks", 32.32);
         Supplement sup2 = new Supplement("Go Lang!", 2.34);
         Supplement sup3 = new Supplement("WooHoo", 12.3);
@@ -86,17 +101,20 @@ public class Client {
     }
 
     public void printWeeklyEmails() {
-        // Part C
-        magService.printWeeklyEmail();
+        /**
+         * Part C
+         * Prints weekly emails for all magazines and customers
+         */
+        magService.printWeeklyEmails();
     }
 
-    public void printWeeklyEmails(int magId) {
-        // Part C
-        magService.printWeeklyEmail(magId);
-    }
 
-    public static void printMonthlyEmails() {
-        // Part D
+    public void printMonthlyEmails() {
+        /**
+         * Part D
+         * Prints bill emails for all paying customers
+         */
+        magService.printMonthlyEmail();
     }
 
     public void addNewAssociateCustomer(String custName, String custEmail) {

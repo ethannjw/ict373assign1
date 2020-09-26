@@ -21,6 +21,14 @@ public class BankAccount extends PaymentMethod {
         this.bank = bank;
     }
 
+    public String getBank() {
+        return bank;
+    }
+
+    public String getAccountNumber() {
+        return accountNumber;
+    }
+
     @Override
     public String toString() {
         return "BankAccount{" +
