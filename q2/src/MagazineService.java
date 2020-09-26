@@ -1,3 +1,4 @@
+import java.lang.reflect.AccessibleObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -16,7 +17,7 @@ public class MagazineService {
     private int serviceId;
     private List<Magazine> mags;
     private List<AssociateCustomer> magCustomers;
-    private List<PayingCustomer> magBillCustomers;
+    private List<PayingCustomer> magPayingCustomers;
     private List<Supplement> supplements;
 
     /**
@@ -29,7 +30,7 @@ public class MagazineService {
         serviceId = nextId.incrementAndGet();
         mags = new ArrayList<Magazine>();
         magCustomers = new ArrayList<AssociateCustomer>();
-        magBillCustomers = new ArrayList<PayingCustomer>();
+        magPayingCustomers = new ArrayList<PayingCustomer>();
         supplements = new ArrayList<Supplement>();
     }
 
@@ -53,11 +54,46 @@ public class MagazineService {
         return mags;
     }
 
+    public List<PayingCustomer> getMagBillCustomers() {
+        return magPayingCustomers;
+    }
+
     public void setSupplements(Supplement supplement) {
         this.supplements.add(supplement);
     }
 
-    // customers
+    /**
+     * inserts a specified paying customer
+     * @param payingCustomer: PayingCustomer
+     */
+    public void setMagBillCustomer(PayingCustomer payingCustomer) {
+        //check if there are duplicates and check if the Paying customer is already paying for someone that is being paid for
+        if (this.magPayingCustomers.contains(payingCustomer)) {
+            System.out.println("Cannot insert duplicate customer!");
+            return;
+        }
+        // for the incoming paying customer each associate customers it is paying for
+        for (int a : payingCustomer.getAssociateCustomers()) {
+            // get the paying customers from this.magBillCustomers
+            for (PayingCustomer c: magPayingCustomers) {
+                // for each associate customer the current paying customers are paying for
+                for (int paidFor: c.getAssociateCustomers()) {
+                    // if any customer is found to be paid for
+                    if (paidFor == a ) {
+                        System.out.println(c.getCustName() + " has already been paid for! Cannot insert!");
+                        return;
+                    }
+                }
+
+            }
+        }
+        this.magPayingCustomers.add(payingCustomer);
+    }
+
+    /**
+     * inserts a specified associate customer
+     * @param magCustomer: AssociateCustomer
+     */
     public void setAssociateCustomer(AssociateCustomer magCustomer) {
         if (!this.magCustomers.contains(magCustomer)) {
             this.magCustomers.add(magCustomer);
@@ -67,28 +103,55 @@ public class MagazineService {
 
     }
 
+    /**
+     * Returns the list of AssociateCustomer
+     * @return associateCustomer: AssociateCustomer
+     */
     public List<AssociateCustomer> getAssociateCustomers() {
         return this.magCustomers;
     }
 
+    /**
+     * Removes a specified customer the weekly email for all magazines based on customer ID
+     * @param custId: int
+     * @return true if successful removal: boolean
+     */
     public boolean remCustomer(int custId){
         return this.magCustomers.removeIf(c -> c.getCustId() == custId);
     }
 
-    public void remCustomer(AssociateCustomer magCustomers){
+    /**
+     * Removes a specified customer the weekly email for all magazines
+     * @param magCustomer: AssociateCustomer
+     * @return true if successful removal: boolean
+     */
+    public boolean remCustomer(AssociateCustomer magCustomer){
         try {
-            this.magCustomers.remove(magCustomers);
+            this.magCustomers.remove(magCustomer);
+            return true;
 
         } catch (IndexOutOfBoundsException e) {
-            System.out.println("Error removing customer: " + magCustomers.getCustName() + '\n');
+            System.out.println("Error removing customer: " + magCustomer.getCustName() + '\n');
+            return false;
         }
     }
 
-    // paying customers
-    public void setMagBillCustomer(PayingCustomer PayingCustomer) {
-        //need to check if there are duplicates and check if the Paying customer is already paying for someone that is being paid for
-        this.magBillCustomers.add(PayingCustomer);
+    /**
+     * Removes a specified customer the weekly email for all magazines
+     * @param magBillCustomer: PayingCustomer
+     * @return true if successful removal: boolean
+     */
+    public boolean remCustomer(PayingCustomer magBillCustomer){
+        try {
+            this.magPayingCustomers.remove(magBillCustomer);
+            return true;
+
+        } catch (IndexOutOfBoundsException e) {
+            System.out.println("Error removing customer: " + magBillCustomer.getCustName() + '\n');
+            return false;
+        }
     }
+
     /**
      * Returns the weekly email for all magazines
      * @return weeklyEmail: String
@@ -215,7 +278,7 @@ public class MagazineService {
     public String printMonthlyEmails() {
         String str = "";
         // for each paying customer
-        for (PayingCustomer payingCustomer : magBillCustomers) {
+        for (PayingCustomer payingCustomer : magPayingCustomers) {
             str = str.concat(this.printMonthlyEmail(payingCustomer));
         }
         return str; // return printMonthlyEmail()

@@ -146,18 +146,41 @@ public class Client {
         PayingCustomer newCust = new PayingCustomer(custName, custEmail);
         this.magService.setMagBillCustomer(newCust);
     }
+    /**
+     * Part F
+     * Removes associate customer with name and email as input
+     * @param custName: String
+     * @param custEmail: String
+     */
+    public void removeAssociateCustomer(String custName, String custEmail) {
 
-    public void removeAssociateCustomer(String custName) {
-        /**
-         * Part F
-         * Removes the first customer that matches the custName
-         * @param custName: String
-         */
         List<AssociateCustomer> cust = this.magService.getAssociateCustomers();
         for (AssociateCustomer c : cust) {
-            if (c.getCustName().equals(custName)) {
+            if (c.getCustName().equals(custName) && c.getCustEmail().equals(custEmail)) {
                 // Found customer to delete
-                if (this.magService.remCustomer(c.custId)) {
+                if (this.magService.remCustomer(c)) {
+                    System.out.println("Successfully removed customer: " + c.getCustName() + "\n");
+                    return; // customer removal success
+                } else {
+                    System.out.println("Unable to remove customer: " + c.getCustName());
+                }
+            }
+        }
+        System.out.println("No such customer");
+    }
+    /**
+     * Part F
+     * Removes paying customer with name and email as input
+     * @param custName: String
+     * @param custEmail: String
+     */
+    public void removePayingCustomer(String custName, String custEmail) {
+
+        List<PayingCustomer> cust = this.magService.getMagBillCustomers();
+        for (PayingCustomer c : cust) {
+            if (c.getCustName().equals(custName) && c.getCustEmail().equals(custEmail)) {
+                // Found customer to delete
+                if (this.magService.remCustomer(c)) {
                     System.out.println("Successfully removed customer: " + c.getCustName() + "\n");
                     return; // customer removal success
                 } else {
