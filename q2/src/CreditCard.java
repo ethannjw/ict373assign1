@@ -30,14 +30,12 @@ public class CreditCard extends PaymentMethod {
         return this.expiry;
     }
 
-    public Boolean setCreditCardNumber(String creditCardNumber) {
+    public void setCreditCardNumber(String creditCardNumber) {
         Matcher matcher = ccFormat.matcher(creditCardNumber);
         if (matcher.find()) {
             this.creditCardNumber = creditCardNumber;
-            return true;
         } else {
-            // need throw an error
-            return false;
+            System.out.println("Invalid email! Try again!");
         }
 
     }

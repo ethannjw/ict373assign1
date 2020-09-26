@@ -1,68 +1,48 @@
 import java.util.ArrayList;
 
+/**
+ * @title       AssociateCustomer
+ * @desc        This class is a on implementation of customer class that adds a list of supplements
+ * @filename    AssociateCustomer.java
+ * @version     0.1
+ * @date        01/10/2020
+ * @author      Ethan Ng
+ */
 
 public class AssociateCustomer extends Customer{
 
-    private ArrayList<Integer> supplements = new ArrayList<Integer>();
-    private PayingCustomer payingCustomer = new PayingCustomer();
+    private ArrayList<Integer> supplements;
 
-    public AssociateCustomer() {
-        super();
-    }
-
+    /**
+     * Constructor constructs the customer name and email
+     * @param custName: String
+     * @param custEmail: String
+     */
     public AssociateCustomer(String custName, String custEmail) {
         super(custName, custEmail);
+        this.supplements = new ArrayList<Integer>();
     }
 
-    public int getCustId() {
-        return this.custId;
+    /**
+     * Adds a new supplement
+     * @param supplement: Supplement
+     */
+    public void setSupplement(Supplement supplement) {
+        int addId = supplement.getSuppId();
+        for (Integer custId : this.supplements) {
+            if (custId == addId) {
+                System.out.println("Duplicate supplement customer! Cannot insert");
+                return;
+            }
+        }
+        this.supplements.add(addId);
     }
-
-    public void setCustName(String name) {
-        this.custName = name;
-    }
-
-    public String getCustName() {
-        return this.custName;
-    }
-
-    public void setCustEmail(String custEmail) {
-        this.custEmail = custEmail;
-    }
-
-    public String getCustEmail() {
-        return this.custEmail;
-    }
-
-    public void setSupplement(ArrayList<Integer> supplements) {
-        this.supplements = supplements;
-    }
-
-    public void setSupplement(Integer supplementId) {
-        this.supplements.add(supplementId);
-    }
-
+    /**
+     * Returns the list of supplements
+     * @return supplements: ArrayList<Integer>
+     */
     public ArrayList<Integer> getSupplements() {
         return this.supplements;
     }
 
-    public PayingCustomer getPayingCustomer() {
-        return this.payingCustomer;
-    }
-
-    public void setPayingCustomer(PayingCustomer payingCustomer) {
-        this.payingCustomer = payingCustomer;
-    }
-
-    public String toString() {
-        String str = ("Customer: " + this.custName + "\n" +
-                "Email: " + this.custEmail + "\n" +
-                "Payer: " + this.payingCustomer + "\n" +
-                "Supplements: \n");
-        for (Integer s : this.supplements) {
-            str = str.concat(s.toString());
-            str = str.concat("\n");
-        }
-        return str;
-    }
 }

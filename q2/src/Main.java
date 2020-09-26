@@ -7,8 +7,13 @@ public class Main {
 
         Client client = new Client();
         client.displayStudentDetails();
-        //client.printWeeklyEmails();
+        System.out.println(client.getMagService());
+        client.printWeeklyEmails();
         client.printMonthlyEmails();
+        client.addNewAssociateCustomer("Jonathan New", "Jonathan@email.com");
+        client.addNewAssociateCustomer("Jonathan New", "Jonathan@email.com");
+        client.printWeeklyEmails();
+
 
 
 

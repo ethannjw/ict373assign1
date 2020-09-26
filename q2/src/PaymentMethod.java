@@ -16,7 +16,12 @@ public class PaymentMethod {
     }
 
     @Override
-    public String toString() {
-        return "Payer Name: " + paymentName + '\n';
+    public boolean equals(Object otherPaymentMethod) {
+
+        if ( ((PaymentMethod) otherPaymentMethod).getPaymentName().equalsIgnoreCase(this.paymentName)) {
+            return true;
+        }
+
+        return false;
     }
 }

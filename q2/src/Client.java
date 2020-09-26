@@ -1,24 +1,24 @@
 
+import java.time.LocalDate;
+import java.util.List;
+
 /**
- * @title Client
- * @desc This class is for testing the Magazine Service system and all of its classes.
+ * @title   Client
+ * @desc    This class is for testing the Magazine Service system and all of its classes. It contains the methods that
+ *          can be called from main
  * @filename Client.java
  * @version 0.1
- * @date 04/10/2020
- * @author Ethan Ng
+ * @date    01/10/2020
+ * @author  Ethan Ng
  */
-
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Client {
     private MagazineService magService;
-
+    /**
+     * Generates a new MagazineService with 7 customers and 4 supplements
+     */
     public Client() {
-        /**
-         * Generates a new MagazineService with 7 customers and 4 supplements
-         */
+
         magService = generateMagazineService();
     }
 
@@ -26,6 +26,9 @@ public class Client {
         return magService;
     }
 
+    /**
+     * Prints the student details
+     */
     public static void displayStudentDetails() {
         System.out.println("----------------------------------------------------------");
         System.out.println("Name: Ethan Ng");
@@ -36,11 +39,12 @@ public class Client {
         System.out.println();
     }
 
+    /**
+     * Generates a new MagazineService with 4 magazines, 7 customers and 4 supplements
+     * @return MagazineService
+     */
     public static MagazineService generateMagazineService() {
-        /**
-         * Generates a new MagazineService with 7 customers and 4 supplements
-         * @return MagazineService
-        */
+
         // Part A: Construct Magazine
         Magazine mag1 = new Magazine("Programming Magazine", 12.20);
         Magazine mag2 = new Magazine("Cooking Magazine", 12.20);
@@ -61,18 +65,18 @@ public class Client {
         s.setSupplements(sup4);
         // Part B: Construct Customers
         AssociateCustomer cust1 = new AssociateCustomer("John Lim", "john.lim@email.com");
-        cust1.setSupplement(1);
-        cust1.setSupplement(3);
+        cust1.setSupplement(sup1);
+        cust1.setSupplement(sup3);
         AssociateCustomer cust2 = new AssociateCustomer("Jayne Petersen", "john.lim@email.com");
-        cust2.setSupplement(1);
-        cust2.setSupplement(0);
+        cust2.setSupplement(sup1);
+        cust2.setSupplement(sup4);
         AssociateCustomer cust3 = new AssociateCustomer("Brian Meadows", "john.lim@email.com");
-        cust3.setSupplement(1);
-        cust3.setSupplement(2);
-        cust3.setSupplement(3);
-        cust3.setSupplement(0);
+        cust3.setSupplement(sup2);
+        cust3.setSupplement(sup1);
+        cust3.setSupplement(sup4);
+        cust3.setSupplement(sup3);
         AssociateCustomer cust4 = new AssociateCustomer("Chloe-Ann Manning", "john.lim@email.com");
-        cust4.setSupplement(3);
+        cust4.setSupplement(sup3);
         s.setAssociateCustomer(cust1);
         s.setAssociateCustomer(cust2);
         s.setAssociateCustomer(cust3);
@@ -99,42 +103,46 @@ public class Client {
 
         return s;
     }
-
+    /**
+     * Part C
+     * Prints weekly emails for all magazines and customers
+     */
     public void printWeeklyEmails() {
-        /**
-         * Part C
-         * Prints weekly emails for all magazines and customers
-         */
-        magService.printWeeklyEmails();
+
+        System.out.println("---------------------All Weekly Emails--------------------");
+        System.out.println(magService.printWeeklyEmails());
+        System.out.println("--------------------Done Weekly Emails--------------------");
     }
 
-
+    /**
+     * Part D
+     * Prints bill emails for all paying customers
+     */
     public void printMonthlyEmails() {
-        /**
-         * Part D
-         * Prints bill emails for all paying customers
-         */
-        magService.printMonthlyEmail();
-    }
 
+        System.out.println("--------------------Print Monthly Emails------------------");
+        System.out.println(magService.printMonthlyEmails());
+        System.out.println("--------------------Done Monthly Emails-------------------");
+    }
+    /**
+     * Part E
+     * Adds new associate customer with name and email as input
+     * @param custName: String
+     * @param custEmail: String
+     */
     public void addNewAssociateCustomer(String custName, String custEmail) {
-        /**
-         * Part E
-         * Adds new associate customer with name and email as input
-         * @param String custName
-         * @param String custEmail
-         */
+
         AssociateCustomer newCust = new AssociateCustomer(custName, custEmail);
         this.magService.setAssociateCustomer(newCust);
     }
-
+    /**
+     * Part E
+     * Adds new paying customer with name and email as input
+     * @param custName: String
+     * @param custEmail: String
+     */
     public void addNewPayingCustomer(String custName, String custEmail) {
-        /**
-         * Part E
-         * Adds new paying customer with name and email as input
-         * @param custName: String
-         * @param custEmail: String
-         */
+
         PayingCustomer newCust = new PayingCustomer(custName, custEmail);
         this.magService.setMagBillCustomer(newCust);
     }
