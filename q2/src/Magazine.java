@@ -62,4 +62,17 @@ public class Magazine {
         return str;
     }
 
+    @Override
+    public boolean equals(Object otherMagazine) {
+        Magazine magazine = (Magazine) otherMagazine;
+
+        if (magazine.magWeeklyCost != this.magWeeklyCost) {
+            return false;
+        }
+        if (!magName.equalsIgnoreCase((magazine.magName))) {
+            return false;
+        }
+        return true;
+    }
+
 }

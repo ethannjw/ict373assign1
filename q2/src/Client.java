@@ -67,15 +67,15 @@ public class Client {
         AssociateCustomer cust1 = new AssociateCustomer("John Lim", "john.lim@email.com");
         cust1.setSupplement(sup1);
         cust1.setSupplement(sup3);
-        AssociateCustomer cust2 = new AssociateCustomer("Jayne Petersen", "john.lim@email.com");
+        AssociateCustomer cust2 = new AssociateCustomer("Jayne Petersen", "jayne.petersen@email.com");
         cust2.setSupplement(sup1);
         cust2.setSupplement(sup4);
-        AssociateCustomer cust3 = new AssociateCustomer("Brian Meadows", "john.lim@email.com");
+        AssociateCustomer cust3 = new AssociateCustomer("Brian Meadows", "brian.meadows@email.com");
         cust3.setSupplement(sup2);
         cust3.setSupplement(sup1);
         cust3.setSupplement(sup4);
         cust3.setSupplement(sup3);
-        AssociateCustomer cust4 = new AssociateCustomer("Chloe-Ann Manning", "john.lim@email.com");
+        AssociateCustomer cust4 = new AssociateCustomer("Chloe-Ann Manning", "Chloe-Ann@email.com");
         cust4.setSupplement(sup3);
         s.setAssociateCustomer(cust1);
         s.setAssociateCustomer(cust2);
@@ -83,8 +83,8 @@ public class Client {
         s.setAssociateCustomer(cust4);
 
         PayingCustomer payer1 = new PayingCustomer("John Lim", "john.doe@email.com");
-        PayingCustomer payer2 = new PayingCustomer("Jayne Petersen", "john.doe@email.com");
-        PayingCustomer payer3 = new PayingCustomer("Alan Burnett", "john.doe@email.com");
+        PayingCustomer payer2 = new PayingCustomer("Jayne Petersen", "petersen@email.com");
+        PayingCustomer payer3 = new PayingCustomer("Alan Burnett", "burnett@email.com");
         CreditCard cc1 = new CreditCard("Lim Swee Keat", "1234 5678 9102 1234", LocalDate.of(2023, 5, 1));
         CreditCard cc2 = new CreditCard("Tim Petersen", "1234 9851 4592 1984", LocalDate.of(2024, 1, 1));
         BankAccount ba1 = new BankAccount("Alan Burnett", "123-56784-981", "ABC Bank");
@@ -97,9 +97,9 @@ public class Client {
         payer3.setAssociateCustomer(cust3);
         payer3.setAssociateCustomer(cust4);
 
-        s.setMagBillCustomer(payer1);
-        s.setMagBillCustomer(payer2);
-        s.setMagBillCustomer(payer3);
+        s.setMagPayingCustomer(payer1);
+        s.setMagPayingCustomer(payer2);
+        s.setMagPayingCustomer(payer3);
 
         return s;
     }
@@ -144,7 +144,7 @@ public class Client {
     public void addNewPayingCustomer(String custName, String custEmail) {
 
         PayingCustomer newCust = new PayingCustomer(custName, custEmail);
-        this.magService.setMagBillCustomer(newCust);
+        this.magService.setMagPayingCustomer(newCust);
     }
     /**
      * Part F
@@ -176,7 +176,7 @@ public class Client {
      */
     public void removePayingCustomer(String custName, String custEmail) {
 
-        List<PayingCustomer> cust = this.magService.getMagBillCustomers();
+        List<PayingCustomer> cust = this.magService.getMagPayingCustomers();
         for (PayingCustomer c : cust) {
             if (c.getCustName().equals(custName) && c.getCustEmail().equals(custEmail)) {
                 // Found customer to delete

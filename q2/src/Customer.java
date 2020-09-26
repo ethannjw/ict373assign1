@@ -96,21 +96,15 @@ public abstract class Customer {
     @Override
     public boolean equals(Object otherCustomer) {
         if (otherCustomer instanceof AssociateCustomer){
-            if (((AssociateCustomer) otherCustomer).getCustId() == this.getCustId()) {
-                return true;
-            }
-            if (((AssociateCustomer) otherCustomer).getCustName() == this.getCustName() && ((AssociateCustomer) otherCustomer).getCustEmail() == this.getCustEmail()) {
-                return true;
+            if (!((AssociateCustomer) otherCustomer).getCustName().equalsIgnoreCase(this.getCustName()) && !((AssociateCustomer) otherCustomer).getCustEmail().equalsIgnoreCase(this.getCustEmail())) {
+                return false;
             }
         }
         if (otherCustomer instanceof PayingCustomer){
-            if (((PayingCustomer) otherCustomer).getCustId() == this.getCustId()) {
-                return true;
-            }
-            if (((PayingCustomer) otherCustomer).getCustName() == this.getCustName() && ((PayingCustomer) otherCustomer).getCustEmail() == this.getCustEmail()) {
-                return true;
+            if (!((PayingCustomer) otherCustomer).getCustName().equalsIgnoreCase(this.getCustName()) && !((PayingCustomer) otherCustomer).getCustEmail().equalsIgnoreCase(this.getCustEmail())) {
+                return false;
             }
         }
-        return false;
+        return true;
     }
 }

@@ -1,4 +1,4 @@
-import java.lang.reflect.AccessibleObject;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -54,8 +54,9 @@ public class MagazineService {
         return mags;
     }
 
-    public List<PayingCustomer> getMagBillCustomers() {
+    public List<PayingCustomer> getMagPayingCustomers() {
         return magPayingCustomers;
+
     }
 
     public void setSupplements(Supplement supplement) {
@@ -66,7 +67,7 @@ public class MagazineService {
      * inserts a specified paying customer
      * @param payingCustomer: PayingCustomer
      */
-    public void setMagBillCustomer(PayingCustomer payingCustomer) {
+    public void setMagPayingCustomer(PayingCustomer payingCustomer) {
         //check if there are duplicates and check if the Paying customer is already paying for someone that is being paid for
         if (this.magPayingCustomers.contains(payingCustomer)) {
             System.out.println("Cannot insert duplicate customer!");
