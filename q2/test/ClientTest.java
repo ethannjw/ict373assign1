@@ -1,3 +1,4 @@
+import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -220,7 +221,65 @@ class ClientTest {
                 "\n";
         assertEquals(testStr, client.getMagService().printWeeklyEmails());
     }
-
+    /**
+     * Test case for part C: print out the text of all the emails for all customers for four weeks of magazines
+     */
+    @org.junit.jupiter.api.Test
+    void printWeeklyEmail() {
+        Magazine testMag = new Magazine("Cooking Magazine", 12.20);
+        String testStr = "Magazine: Cooking Magazine\n" +
+                "\n" +
+                "From: customerservice@scammagazines.com\n" +
+                "Recipient: john.lim@email.com\n" +
+                "Subject:\n" +
+                "\tJohn Lim, your Weekly Magazine Cooking Magazine is ready for viewing!\n" +
+                "Content:\n" +
+                "Dear John Lim,\n" +
+                "\tPlease follow the following link to view your magazine: \n" +
+                "\twww.tinyurl.com/fakeurl \n" +
+                "\tAlong with your supplements: \n" +
+                "\t\tJava Rocks\n" +
+                "\t\tWooHoo\n" +
+                "\n" +
+                "From: customerservice@scammagazines.com\n" +
+                "Recipient: jayne.petersen@email.com\n" +
+                "Subject:\n" +
+                "\tJayne Petersen, your Weekly Magazine Cooking Magazine is ready for viewing!\n" +
+                "Content:\n" +
+                "Dear Jayne Petersen,\n" +
+                "\tPlease follow the following link to view your magazine: \n" +
+                "\twww.tinyurl.com/fakeurl \n" +
+                "\tAlong with your supplements: \n" +
+                "\t\tJava Rocks\n" +
+                "\t\tThe Grind\n" +
+                "\n" +
+                "From: customerservice@scammagazines.com\n" +
+                "Recipient: brian.meadows@email.com\n" +
+                "Subject:\n" +
+                "\tBrian Meadows, your Weekly Magazine Cooking Magazine is ready for viewing!\n" +
+                "Content:\n" +
+                "Dear Brian Meadows,\n" +
+                "\tPlease follow the following link to view your magazine: \n" +
+                "\twww.tinyurl.com/fakeurl \n" +
+                "\tAlong with your supplements: \n" +
+                "\t\tGo Lang!\n" +
+                "\t\tJava Rocks\n" +
+                "\t\tThe Grind\n" +
+                "\t\tWooHoo\n" +
+                "\n" +
+                "From: customerservice@scammagazines.com\n" +
+                "Recipient: Chloe-Ann@email.com\n" +
+                "Subject:\n" +
+                "\tChloe-Ann Manning, your Weekly Magazine Cooking Magazine is ready for viewing!\n" +
+                "Content:\n" +
+                "Dear Chloe-Ann Manning,\n" +
+                "\tPlease follow the following link to view your magazine: \n" +
+                "\twww.tinyurl.com/fakeurl \n" +
+                "\tAlong with your supplements: \n" +
+                "\t\tWooHoo\n" +
+                "\n";
+        assertEquals(testStr, client.getMagService().printWeeklyEmail(testMag));
+    }
     /**
      * Test case for part D: print out the text for the end of month emails for the paying customers
      */
@@ -282,7 +341,7 @@ class ClientTest {
                 "\tPayment will be deducted end of the month from bank account:\n" +
                 "\t\tAccount Holder Name: Alan Burnett\n" +
                 "\t\tBank Name: ABC Bank\n" +
-                "\t\tBank Account Number: 123-56784-981\n" +
+                "\t\tBank Account Number: 123-567-981\n" +
                 "\n";
         assertEquals(testStr, client.getMagService().printMonthlyEmails());
     }

@@ -22,7 +22,6 @@ public class PayingCustomer extends Customer {
      */
     public PayingCustomer(String custName, String custEmail) {
         super(custName, custEmail);
-        this.setPaymentMethod(new PaymentMethod());
     }
 
     /**
@@ -34,35 +33,58 @@ public class PayingCustomer extends Customer {
     }
 
     /**
-     * Sets the payment method
-     * @param paymentMethod: payment method
+     * Sets the payment method of credit card
+     * @param creditCard    CreditCard class
+     * @return boolean  Returns true if successful, false if not
      */
-    public void setPaymentMethod(PaymentMethod paymentMethod) {
-        if (this.paymentMethod == paymentMethod) {
-            System.out.println("Payment Method already exists!");
-            return;
+    public boolean setCreditCard(CreditCard creditCard) {
+        if (this.paymentMethod != null) {
+            if (this.paymentMethod.equals(creditCard)) {
+                System.out.println("Payment Method already exists!");
+                return false;
+            }
         }
-        this.paymentMethod = paymentMethod;
+        this.paymentMethod = creditCard;
+        return true;
+    }
+
+    /**
+     * Sets the payment method of bank account
+     * @param bankAccount: bank account class
+     * @return boolean  Returns true if successful, false if not
+     */
+    public boolean setBankAccount(BankAccount bankAccount) {
+        if (this.paymentMethod != null) {
+            if (this.paymentMethod.equals(bankAccount)) {
+                System.out.println("Payment Method already exists!");
+                return false;
+            }
+        }
+        this.paymentMethod = bankAccount;
+        return true;
 
     }
 
     /**
      * Adds an Associate Customer
-     * @param associateCustomer: AssociateCustomer
+     * @param associateCustomer AssociateCustomer
+     * @return boolean  Returns true if successful, false if not
      */
-    public void setAssociateCustomer(AssociateCustomer associateCustomer)  {
+    public boolean setAssociateCustomer(AssociateCustomer associateCustomer)  {
         int addId = associateCustomer.getCustId();
         for (Integer custId : this.associateCustomers) {
             if (custId == addId) {
                 System.out.println("Duplicate associate customer! Cannot insert");
-                return;
+                return false;
             }
         }
-        this.associateCustomers.add(addId) ;
+        this.associateCustomers.add(addId);
+        return true;
     }
+
     /**
      * Returns the list of associate customers
-     * @return paymentMethod: payment method
+     * @return paymentMethod    payment method
      */
     public ArrayList<Integer> getAssociateCustomers() {
         return associateCustomers;

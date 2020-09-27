@@ -14,6 +14,7 @@ import java.util.List;
 
 public class Client {
     private MagazineService magService;
+
     /**
      * Generates a new MagazineService with 7 customers and 4 supplements
      */
@@ -22,6 +23,10 @@ public class Client {
         magService = generateMagazineService();
     }
 
+    /**
+     * Returns the MagazineService
+     * @return MagazineService
+     */
     public MagazineService getMagService() {
         return magService;
     }
@@ -59,10 +64,10 @@ public class Client {
         Supplement sup2 = new Supplement("Go Lang!", 2.34);
         Supplement sup3 = new Supplement("WooHoo", 12.3);
         Supplement sup4 = new Supplement("The Grind", 2.50);
-        s.setSupplements(sup1);
-        s.setSupplements(sup2);
-        s.setSupplements(sup3);
-        s.setSupplements(sup4);
+        s.setSupplement(sup1);
+        s.setSupplement(sup2);
+        s.setSupplement(sup3);
+        s.setSupplement(sup4);
         // Part B: Construct Customers
         AssociateCustomer cust1 = new AssociateCustomer("John Lim", "john.lim@email.com");
         cust1.setSupplement(sup1);
@@ -87,13 +92,13 @@ public class Client {
         PayingCustomer payer3 = new PayingCustomer("Alan Burnett", "burnett@email.com");
         CreditCard cc1 = new CreditCard("Lim Swee Keat", "1234 5678 9102 1234", LocalDate.of(2023, 5, 1));
         CreditCard cc2 = new CreditCard("Tim Petersen", "1234 9851 4592 1984", LocalDate.of(2024, 1, 1));
-        BankAccount ba1 = new BankAccount("Alan Burnett", "123-56784-981", "ABC Bank");
+        BankAccount ba1 = new BankAccount("Alan Burnett", "123-567-981", "ABC Bank");
 
-        payer1.setPaymentMethod(cc1);
+        payer1.setCreditCard(cc1);
         payer1.setAssociateCustomer(cust1);
-        payer2.setPaymentMethod(cc2);
+        payer2.setCreditCard(cc2);
         payer2.setAssociateCustomer(cust2);
-        payer3.setPaymentMethod(ba1);
+        payer3.setBankAccount(ba1);
         payer3.setAssociateCustomer(cust3);
         payer3.setAssociateCustomer(cust4);
 

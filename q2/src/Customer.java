@@ -18,13 +18,13 @@ public abstract class Customer {
     protected String custName;
     protected String custEmail;
 
-    // Other functional attributes
+    // email format validation string
     private Pattern emailFormat = Pattern.compile("^[a-zA-Z0-9_!#$%&’*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$");
 
     /**
      * Constructor constructs the customer name and email
-     * @param custEmail: String
-     * @param custName: String
+     * @param custEmail String of customer email
+     * @param custName  String of customer name
      */
     protected Customer(String custName, String custEmail) {
         this.custId = nextId.incrementAndGet();
@@ -89,9 +89,9 @@ public abstract class Customer {
     }
 
     /**
-     * Overrides the equals method to check for equality by checking the customerid, custNaame and custEmail
-     * @param otherCustomer: AssociateCustomer
-     * @return boolean
+     * Overrides the equals method to check for equality by checking the custName and custEmail
+     * @param otherCustomer AssociateCustomer or PayingCustomer to be compared
+     * @return boolean  Returns true if both are equals, false if not
      */
     @Override
     public boolean equals(Object otherCustomer) {

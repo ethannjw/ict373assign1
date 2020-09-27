@@ -1,27 +1,67 @@
-public class PaymentMethod {
-    private String paymentName;
+/**
+ * @title       PaymentMethod
+ * @desc        This class is to define an abstract PaymentMethod that contains the name of the payment method holder
+ * @filename    PaymentMethod.java
+ * @version     0.1
+ * @date        01/10/2020
+ * @author      Ethan Ng
+ */
 
-    public PaymentMethod() {
-        this.setPaymentName("");
-    }
-    public PaymentMethod(String paymentName){
-        this.setPaymentName(paymentName);
-    }
-    public String getPaymentName() {
-        return this.paymentName;
-    }
-    public Boolean setPaymentName(String paymentName) {
-        this.paymentName = paymentName;
-        return true;
+public abstract class PaymentMethod {
+    private String payerName;
+
+    /**
+     * Constructor
+     * Initialises the payment method holder name
+     * @param payerName           Name of payment method holder in String
+     */
+    public PaymentMethod(String payerName){
+        this.setPayerName(payerName);
     }
 
-    @Override
-    public boolean equals(Object otherPaymentMethod) {
+    /**
+     * Retrieves the payer name
+     * @return paymentName    The payer name string
+     */
+    public String getPayerName() {
+        return this.payerName;
+    }
 
-        if ( ((PaymentMethod) otherPaymentMethod).getPaymentName().equalsIgnoreCase(this.paymentName)) {
+    /**
+     * Sets the payer name
+     * @param payerName       The payer name string
+     * @return boolean      Returns true if successful, false if not
+     */
+    public Boolean setPayerName(String payerName) {
+        if (payerName.length() > 0) {
+            this.payerName = payerName;
             return true;
+        } else {
+            System.out.println("Name must be having a length of more than 1! Try again!");
+            return false;
         }
 
+    }
+
+    /**
+     * To string method
+     * @return string    String representation of class
+     */
+    @Override
+    public String toString() {
+        return "Payer Name: " + payerName + '\n';
+    }
+
+    /**
+     * Overrides the equals method to check for equality by checking the Name
+     * @param otherPaymentMethod     PaymentMethod class to be compared
+     * @return boolean    Returns true if both are equals, false if not
+     */
+    @Override
+    public boolean equals(Object otherPaymentMethod) {
+        if ( ((PaymentMethod) otherPaymentMethod).getPayerName().equalsIgnoreCase(this.payerName)) {
+            return true;
+        }
         return false;
     }
 }

@@ -15,8 +15,8 @@ public class AssociateCustomer extends Customer{
 
     /**
      * Constructor constructs the customer name and email
-     * @param custName: String
-     * @param custEmail: String
+     * @param custName  String
+     * @param custEmail String
      */
     public AssociateCustomer(String custName, String custEmail) {
         super(custName, custEmail);
@@ -25,21 +25,23 @@ public class AssociateCustomer extends Customer{
 
     /**
      * Adds a new supplement
-     * @param supplement: Supplement
+     * @param supplement    Supplement to be added
+     * @return boolean  Returns true if successful, false if not
      */
-    public void setSupplement(Supplement supplement) {
+    public boolean setSupplement(Supplement supplement) {
         int addId = supplement.getSuppId();
         for (Integer custId : this.supplements) {
             if (custId == addId) {
                 System.out.println("Duplicate supplement customer! Cannot insert");
-                return;
+                return false;
             }
         }
         this.supplements.add(addId);
+        return true;
     }
     /**
      * Returns the list of supplements
-     * @return supplements: ArrayList<Integer>
+     * @return supplements  ArrayList<Integer> list of supplements
      */
     public ArrayList<Integer> getSupplements() {
         return this.supplements;

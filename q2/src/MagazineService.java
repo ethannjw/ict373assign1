@@ -10,6 +10,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @version     0.1
  * @date        01/10/2020
  * @author      Ethan Ng
+ * @// TODO: 9/27/2020 Add functionality to remove supplement, first checking for usages
  */
 
 public class MagazineService {
@@ -36,7 +37,7 @@ public class MagazineService {
 
     /**
      * Retrieves the serviceId
-     * @return serviceId
+     * @return serviceId    The magazine service unique identifier
      */
     public int getServiceId() {
         return serviceId;
@@ -44,28 +45,48 @@ public class MagazineService {
 
     /**
      * Adds a Magazine to the list of magazines
-     * @param mag: Magazine
+     * @param mag   A new instance of Magazine
      */
-    public void setMags(Magazine mag) {
+    public boolean setMags(Magazine mag) {
+        if (this.mags.contains(mag)) {
+            System.out.println("Cannot insert duplicate magazine!");
+            return false;
+        }
         this.mags.add(mag);
+        return true;
     }
 
+    /**
+     * Returns the list of magazines currently present in the class
+     * @return mag   The list of of Magazines currently present
+     */
     public List<Magazine> getMagazines() {
         return mags;
     }
 
+    /**
+     * Returns the list of Paying customers currently present in the class
+     * @return payingCustomers   The list of of paying customers currently present
+     */
     public List<PayingCustomer> getMagPayingCustomers() {
         return magPayingCustomers;
-
     }
 
-    public void setSupplements(Supplement supplement) {
+    /**
+     * Adds a supplement to the list of supplements
+     * @param supplement   A new instance of supplement
+     */
+    public void setSupplement(Supplement supplement) {
+        if (this.supplements.contains(supplement)) {
+            System.out.println("Cannot insert duplicate supplement!");
+            return;
+        }
         this.supplements.add(supplement);
     }
 
     /**
      * inserts a specified paying customer
-     * @param payingCustomer: PayingCustomer
+     * @param payingCustomer    PayingCustomer
      */
     public void setMagPayingCustomer(PayingCustomer payingCustomer) {
         //check if there are duplicates and check if the Paying customer is already paying for someone that is being paid for
@@ -85,7 +106,6 @@ public class MagazineService {
                         return;
                     }
                 }
-
             }
         }
         this.magPayingCustomers.add(payingCustomer);
@@ -93,7 +113,7 @@ public class MagazineService {
 
     /**
      * inserts a specified associate customer
-     * @param magCustomer: AssociateCustomer
+     * @param magCustomer   Insert an Associate Customer into the service
      */
     public void setAssociateCustomer(AssociateCustomer magCustomer) {
         if (!this.magCustomers.contains(magCustomer)) {
@@ -106,7 +126,7 @@ public class MagazineService {
 
     /**
      * Returns the list of AssociateCustomer
-     * @return associateCustomer: AssociateCustomer
+     * @return associateCustomer    Returns the List of Associate Customers currently present
      */
     public List<AssociateCustomer> getAssociateCustomers() {
         return this.magCustomers;
@@ -115,7 +135,7 @@ public class MagazineService {
     /**
      * Removes a specified customer the weekly email for all magazines based on customer ID
      * @param custId: int
-     * @return true if successful removal: boolean
+     * @return boolean  true if successful removal
      */
     public boolean remCustomer(int custId){
         return this.magCustomers.removeIf(c -> c.getCustId() == custId);
@@ -123,8 +143,8 @@ public class MagazineService {
 
     /**
      * Removes a specified customer the weekly email for all magazines
-     * @param magCustomer: AssociateCustomer
-     * @return true if successful removal: boolean
+     * @param magCustomer   Associate Customer class instance to be removed
+     * @return boolean  true if successful removal
      */
     public boolean remCustomer(AssociateCustomer magCustomer){
         try {
@@ -139,23 +159,39 @@ public class MagazineService {
 
     /**
      * Removes a specified customer the weekly email for all magazines
-     * @param magBillCustomer: PayingCustomer
-     * @return true if successful removal: boolean
+     * @param magPayingCustomer     Instance of PayingCustomer to be removed
+     * @return boolean  true if successful removal
      */
-    public boolean remCustomer(PayingCustomer magBillCustomer){
+    public boolean remCustomer(PayingCustomer magPayingCustomer){
         try {
-            this.magPayingCustomers.remove(magBillCustomer);
+            this.magPayingCustomers.remove(magPayingCustomer);
             return true;
 
         } catch (IndexOutOfBoundsException e) {
-            System.out.println("Error removing customer: " + magBillCustomer.getCustName() + '\n');
+            System.out.println("Error removing customer: " + magPayingCustomer.getCustName() + '\n');
             return false;
         }
     }
+    /**
+     * Public method that returns the weekly email for a specified magazine
+     * @return weeklyEmail  String of weekly email for magazine
+     */
+    public String printWeeklyEmail(Magazine magazine) {
+        String str = "";
+        //loop through all magazines
+        for (Magazine m : this.mags) {
+            if (m.equals(magazine)) {
+                str = str.concat("Magazine: " + m.getMagName() + "\n\n");
+                //loop through all customers
+                str = str.concat(this.printWeeklyEmail(m.getMagName()));
+            }
+        }
+        return str;
+    }
 
     /**
-     * Returns the weekly email for all magazines
-     * @return weeklyEmail: String
+     * Public method that returns the weekly email for all magazines in string format
+     * @return weeklyEmail  String of all weekly email
      */
     public String printWeeklyEmails() {
         String str = "";
@@ -167,9 +203,10 @@ public class MagazineService {
         }
         return str;
     }
+
     /**
      * Prints out the weekly email for a magazine and all its customers
-     * @param magName
+     * @param magName   Specified Magazine name string
      * @return weeklyEmail: String
      */
     private String printWeeklyEmail(String magName) {
@@ -191,7 +228,7 @@ public class MagazineService {
                 for (Supplement s: this.supplements){
                     // check if the supplement has in customer
                     if (s.getSuppId() == idx){
-                        str = str.concat("\t\t" + s.getName() + "\n");
+                        str = str.concat("\t\t" + s.getSuppName() + "\n");
                     }
                 }
             }
@@ -238,7 +275,7 @@ public class MagazineService {
                         for (Supplement s: this.supplements){
                             if (s.getSuppId() == supplementId) {
                                 // prints each supplement and their cost
-                                str = str.concat("\t\t" + s.getName() + " Cost: $" + s.getSupplementWeeklyCost() + "\n");
+                                str = str.concat("\t\t" + s.getSuppName() + " Cost: $" + s.getSupplementWeeklyCost() + "\n");
                                 // add each subscription cost to total
                                 total += s.getSupplementWeeklyCost();
                             }
@@ -259,12 +296,12 @@ public class MagazineService {
         PaymentMethod paymentMethod = payingCustomer.getPaymentMethod();
         if (paymentMethod instanceof BankAccount) {
             str = str.concat("\tPayment will be deducted end of the month from bank account:" + "\n");
-            str = str.concat("\t\tAccount Holder Name: " + paymentMethod.getPaymentName() + "\n");
-            str = str.concat("\t\tBank Name: " + ((BankAccount) paymentMethod).getBank() + "\n");
+            str = str.concat("\t\tAccount Holder Name: " + paymentMethod.getPayerName() + "\n");
+            str = str.concat("\t\tBank Name: " + ((BankAccount) paymentMethod).getBankName() + "\n");
             str = str.concat("\t\tBank Account Number: " + ((BankAccount) paymentMethod).getAccountNumber() + "\n");
         } else if (paymentMethod instanceof CreditCard) {
             str = str.concat("\tPayment will be deducted end of the month from credit card:" + "\n");
-            str = str.concat("\t\tCredit Card Holder Name: " + paymentMethod.getPaymentName() + "\n");
+            str = str.concat("\t\tCredit Card Holder Name: " + paymentMethod.getPayerName() + "\n");
             str = str.concat("\t\tCredit Card Number: " + ((CreditCard) paymentMethod).getCreditCardNumber() + "\n");
             str = str.concat("\t\tCredit Card Expiry: " + ((CreditCard) paymentMethod).getExpiry() + "\n");
         }

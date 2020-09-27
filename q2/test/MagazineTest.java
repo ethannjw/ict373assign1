@@ -11,13 +11,10 @@ class MagazineTest {
         mag = new Magazine("Programming Magazine", 12.20);
     }
 
-    @Test
-    void getMagId() {
-
-    }
 
     @Test
     void getMagName() {
+        assertNotEquals("Not Programming Magazine", mag.getMagName());
         assertEquals("Programming Magazine", mag.getMagName());
     }
 
@@ -28,18 +25,15 @@ class MagazineTest {
     }
 
     @Test
-    void getMagEmailContent() {
-
-    }
-
-    @Test
-    void setMagEmailContent() {
+    void setMagWeeklyCost2() {
+        assertFalse(mag.setMagWeeklyCost(-200.05));
     }
 
     @Test
     void setMagWeeklyCost() {
-        mag.setMagWeeklyCost(200.05);
+        assertTrue(mag.setMagWeeklyCost(200.05));
         assertEquals(200.05, mag.getMagWeeklyCost());
+
     }
 
     @Test
@@ -61,7 +55,7 @@ class MagazineTest {
     @Test
     void testEquals() {
         Magazine testMag = new Magazine("Programming Magazine", 12.20);
-        assertTrue(testMag.equals(mag));
+        assertEquals(testMag, mag);
 
     }
 
