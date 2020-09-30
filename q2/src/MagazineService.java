@@ -20,7 +20,7 @@ public class MagazineService {
     private List<AssociateCustomer> magCustomers;
     private List<PayingCustomer> magPayingCustomers;
     private List<Supplement> supplements;
-
+    private static Total total;
     /**
      * Empty Constructor
      * Initialises the service id, a list of Magaazines, a list of AssociateCustomers, a list of PayingCustomers and a
@@ -33,6 +33,7 @@ public class MagazineService {
         magCustomers = new ArrayList<AssociateCustomer>();
         magPayingCustomers = new ArrayList<PayingCustomer>();
         supplements = new ArrayList<Supplement>();
+        total = new Total(0.0);
     }
 
     /**
@@ -76,23 +77,38 @@ public class MagazineService {
      * Adds a supplement to the list of supplements
      * @param supplement   A new instance of supplement
      */
-    public void setSupplement(Supplement supplement) {
+    public boolean setSupplement(Supplement supplement) {
         if (this.supplements.contains(supplement)) {
             System.out.println("Cannot insert duplicate supplement!");
-            return;
+            return false;
         }
         this.supplements.add(supplement);
+        return true;
+    }
+
+    /**
+     * Get a supplement based on supplement ID
+     * @param supplementId
+     * @return supplement
+     */
+    public Supplement getSupplement(int supplementId) {
+        for (Supplement s : this.supplements) {
+            if (s.getSuppId() == supplementId) {
+                return s;
+            }
+        }
+        return null;
     }
 
     /**
      * inserts a specified paying customer
      * @param payingCustomer    PayingCustomer
      */
-    public void setMagPayingCustomer(PayingCustomer payingCustomer) {
+    public boolean setMagPayingCustomer(PayingCustomer payingCustomer) {
         //check if there are duplicates and check if the Paying customer is already paying for someone that is being paid for
         if (this.magPayingCustomers.contains(payingCustomer)) {
             System.out.println("Cannot insert duplicate customer!");
-            return;
+            return false;
         }
         // for the incoming paying customer each associate customers it is paying for
         for (int a : payingCustomer.getAssociateCustomers()) {
@@ -103,12 +119,13 @@ public class MagazineService {
                     // if any customer is found to be paid for
                     if (paidFor == a ) {
                         System.out.println(c.getCustName() + " has already been paid for! Cannot insert!");
-                        return;
+                        return false;
                     }
                 }
             }
         }
         this.magPayingCustomers.add(payingCustomer);
+        return true;
     }
 
     /**
@@ -173,6 +190,37 @@ public class MagazineService {
         }
     }
     /**
+     * Wrapper class that allows storing of a total variable assessable within this class.
+     * Used for calculating the total cost of the customers
+     * Consists of get and set method for a double variable
+     * Consists of .add() method to add and .zero() to reset the total back to zero
+     */
+    private class Total {
+        private double total;
+        public Total(double total) {
+            this.total = total;
+        }
+        public String toString(){
+            return String.valueOf(this.total);
+        }
+
+        public void setTotal(double total) {
+            this.total = total;
+        }
+
+        public double getTotal() {
+            return total;
+        }
+
+        public void add(double otherDouble) {
+            this.total += otherDouble;
+        }
+        public void zero(){
+            this.total = 0.0;
+        }
+    }
+
+    /**
      * Public method that returns the weekly email for a specified magazine
      * @return weeklyEmail  String of weekly email for magazine
      */
@@ -211,27 +259,20 @@ public class MagazineService {
      */
     private String printWeeklyEmail(String magName) {
         String str = "";
-        for (AssociateCustomer customer : this.magCustomers) {
+        for (AssociateCustomer associateCustomer : this.magCustomers) {
             str = str.concat("From: customerservice@scammagazines.com" + "\n");
-            str = str.concat("Recipient: " + customer.getCustEmail() + "\n");
+            str = str.concat("Recipient: " + associateCustomer.getCustEmail() + "\n");
             str = str.concat("Subject:" + "\n");
-            str = str.concat("\t" + customer.getCustName() + ", your Weekly Magazine " + magName + " is ready for viewing!" + "\n");
+            str = str.concat("\t" + associateCustomer.getCustName() + ", your Weekly Magazine " + magName + " is ready for viewing!" + "\n");
             str = str.concat("Content:" + "\n");
-            str = str.concat("Dear " + customer.getCustName() + "," + "\n");
+            str = str.concat("Dear " + associateCustomer.getCustName() + "," + "\n");
             str = str.concat("\tPlease follow the following link to view your magazine: " + "\n");
             str = str.concat("\twww.tinyurl.com/fakeurl " + "\n");
             str = str.concat("\tAlong with your supplements: " + "\n");
 
-            // for each index in customer.supplement
-            for (Integer idx : customer.getSupplements()) {
-                // for each available supplement
-                for (Supplement s: this.supplements){
-                    // check if the supplement has in customer
-                    if (s.getSuppId() == idx){
-                        str = str.concat("\t\t" + s.getSuppName() + "\n");
-                    }
-                }
-            }
+            // print the supplement for the associate customer
+            str = str.concat(printCustomerListOfSupplements(associateCustomer, false));
+
             str = str.concat("\n");
         }
         return str; // return printWeeklyEmail(String magName)
@@ -241,11 +282,11 @@ public class MagazineService {
      * @return total: double
      */
     private double getBillsForMonth() {
-        double total = 0.0;
+        double magWeeklyCost = 0.0;
         for (Magazine m : mags) {
-            total += m.getMagWeeklyCost();
+            magWeeklyCost += m.getMagWeeklyCost();
         }
-        return total;
+        return magWeeklyCost;
     }
     /**
      * Generates the monthly email for specified paying customer
@@ -253,9 +294,9 @@ public class MagazineService {
      */
     public String printMonthlyEmail(PayingCustomer payingCustomer) {
         String str = "";
-        double magSubTotal = getBillsForMonth();
         Supplement currentSupp;
-        double total = 0.0;
+        // initialise the global variable total to zero to start
+        total.zero();
         int numAssociateCustomer = payingCustomer.getAssociateCustomers().size();
         str = str.concat("From: billing@scammagazines.com\n");
         str = str.concat("Recipient: " + payingCustomer.getCustEmail() + "\n");
@@ -264,29 +305,13 @@ public class MagazineService {
         str = str.concat("Content:\n");
         str = str.concat("Dear " + payingCustomer.getCustName() + ",\n");
         str = str.concat("\tHere is a list of customers you paying for: \n");
-        // for each associate customer in paying customer
-        for (Integer associateCustomerId : payingCustomer.getAssociateCustomers()) {
-            // search for mag customer based on id
-            for (AssociateCustomer associateCustomer : this.magCustomers) {
-                if (associateCustomer.getCustId() == associateCustomerId) {
-                    // Prints the customer name
-                    str = str.concat("\tCustomer: " + associateCustomer.getCustName() + "\n");
-                    for (Integer supplementId : associateCustomer.getSupplements()) {
-                        for (Supplement s: this.supplements){
-                            if (s.getSuppId() == supplementId) {
-                                // prints each supplement and their cost
-                                str = str.concat("\t\t" + s.getSuppName() + " Cost: $" + s.getSupplementWeeklyCost() + "\n");
-                                // add each subscription cost to total
-                                total += s.getSupplementWeeklyCost();
-                            }
-                        }
-                    }
-                }
-            }
-        }
+
+        // print the paying customer supplement
+        str = str.concat(printPayingCustomerSupplement(payingCustomer));
+
         // add to the total the total subscription for a month times total number of associate customers
-        double subscriptionTotal = magSubTotal * numAssociateCustomer;
-        total += subscriptionTotal;
+        double subscriptionTotal = getBillsForMonth() * numAssociateCustomer;
+        total.add(subscriptionTotal);
 
         // prints the total bill
         str = str.concat("\tFor this month: \n");
@@ -308,7 +333,52 @@ public class MagazineService {
         str = str.concat("\n");
         return str; // printMonthlyEmails(PayingCustomer payingCustomer)
     }
-
+    /**
+     * Generates the supplements for each associate customer for specified paying customer
+     * @param payingCustomer
+     * @return text of all associate customers supplements in String
+     */
+    private String printPayingCustomerSupplement(PayingCustomer payingCustomer) {
+        String str = "";
+        // for each associate customer in paying customer
+        for (Integer associateCustomerId : payingCustomer.getAssociateCustomers()) {
+            for (AssociateCustomer associateCustomer : this.magCustomers) {
+                // search for mag customer based on id
+                if (associateCustomer.getCustId() == associateCustomerId) {
+                    // Prints the customer name
+                    str = str.concat("\tCustomer: " + associateCustomer.getCustName() + "\n");
+                    // for each customer
+                    str = str.concat(printCustomerListOfSupplements(associateCustomer, true));
+                }
+            }
+        }
+        return str;
+    }
+    /**
+     * Generates the supplements for each associate customer for specified paying customer
+     * @param associateCustomer associate customer to print
+     * @param printCost     true/false sums up the cost to the total private class and prints the cost of supplement for each
+     * @return text of all associate customer supplements in String
+     */
+    private String printCustomerListOfSupplements(AssociateCustomer associateCustomer, boolean printCost) {
+        String str = "";
+        // for each customer
+        for (Integer supplementId : associateCustomer.getSupplements()) {
+            for (Supplement s : this.supplements) {
+                if (s.getSuppId() == supplementId) {
+                    // prints each supplement and their cost
+                    if (printCost) {
+                        str = str.concat("\t\t" + s.getSuppName() + " Cost: $" + s.getSupplementWeeklyCost() + "\n");
+                        // add each subscription cost to total
+                        total.add(s.getSupplementWeeklyCost());
+                    } else {
+                        str = str.concat("\t\t" + s.getSuppName() + "\n");
+                    }
+                }
+            }
+        }
+        return str;
+    }
     /**
      * Generates the monthly email for all paying customers
      * @return monthly email: String
@@ -320,6 +390,32 @@ public class MagazineService {
             str = str.concat(this.printMonthlyEmail(payingCustomer));
         }
         return str; // return printMonthlyEmail()
+    }
+
+    /**
+     * Generates the list of available supplements with ID and name
+     * @return list of supplements in String
+     */
+    public String printAllSupplements() {
+        String str = "";
+        for (Supplement s : this.supplements) {
+            str = str.concat("Supplement ID: " + s.getSuppId() + " Name: " + s.getSuppName() + "\n");
+        }
+        return str;
+    }
+
+    /**
+     * check if supplement ID exists
+     * @param supplementId  in int
+     * @return true if such ID exists, false if not
+     */
+    public boolean hasSupplement(int supplementId) {
+        for (Supplement s : this.supplements) {
+            if (s.getSuppId() == supplementId) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

@@ -350,7 +350,7 @@ class ClientTest {
      * Test case for part E: add a new customer to the magazine service
      */
     @org.junit.jupiter.api.Test
-    void addNewAssociateCustomer() {
+    void addNewAssociateCustomer() throws Customer.InvalidDetailException {
         AssociateCustomer testAssociateCustomer = new AssociateCustomer("Jonathan New", "Jonathan@email.com");
         client.addNewAssociateCustomer("Jonathan New", "Jonathan@email.com");
 
@@ -363,7 +363,7 @@ class ClientTest {
      * Test case for part E: add a new customer to the magazine service
      */
     @org.junit.jupiter.api.Test
-    void addNewPayingCustomer() {
+    void addNewPayingCustomer() throws Customer.InvalidDetailException{
         PayingCustomer testPayingCustomer = new PayingCustomer("Jonathan New", "Jonathan@email.com");
         client.addNewPayingCustomer("Jonathan New", "Jonathan@email.com");
         // check if the new customer is found
@@ -375,7 +375,7 @@ class ClientTest {
      * Test case for part F: remove an existing customer from the magazine service,
      */
     @org.junit.jupiter.api.Test
-    void removeAssociateCustomer() {
+    void removeAssociateCustomer() throws Customer.InvalidDetailException{
         AssociateCustomer testAssociateCustomer = new AssociateCustomer("John Lim", "john.lim@email.com");
         // remove customer
         client.removeAssociateCustomer("John Lim", "john.lim@email.com");
@@ -388,7 +388,7 @@ class ClientTest {
      * Test case for part F: remove an existing customer from the magazine service,
      */
     @org.junit.jupiter.api.Test
-    void removePayingCustomer() {
+    void removePayingCustomer() throws Customer.InvalidDetailException{
         PayingCustomer testPayingCustomer = new PayingCustomer("John Lim", "john.doe@email.com");
 
         // remove customer

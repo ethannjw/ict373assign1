@@ -22,20 +22,33 @@ public abstract class Customer {
     private Pattern emailFormat = Pattern.compile("^[a-zA-Z0-9_!#$%&’*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$");
 
     /**
+     * Invalid exception class that tells the user error message on invalid entry
+     * @param message in String
+     */
+    static class InvalidDetailException extends Exception {
+        public InvalidDetailException(String msg) {
+            super(msg);
+        }
+    }
+
+    /**
+     * Constructor constructs the customer name and email to empty string
+     */
+    protected Customer() {
+        this.custId = nextId.incrementAndGet();
+        this.custName = "";
+        this.custEmail = "";
+    }
+
+    /**
      * Constructor constructs the customer name and email
      * @param custEmail String of customer email
      * @param custName  String of customer name
      */
-    protected Customer(String custName, String custEmail) {
+    protected Customer(String custName, String custEmail) throws InvalidDetailException {
         this.custId = nextId.incrementAndGet();
-
-        try {
-            this.setCustName(custName);
-            this.setCustEmail(custEmail);
-        }
-        catch (Exception e) {
-            System.out.println(e);
-        }
+        this.setCustName(custName);
+        this.setCustEmail(custEmail);
     }
 
     /**
@@ -50,11 +63,11 @@ public abstract class Customer {
      * Sets the customer name
      * @param custName: String
      */
-    protected void setCustName(String custName) throws Exception{
+    protected void setCustName(String custName) throws InvalidDetailException {
         if (custName.length() > 0) {
             this.custName = custName;
         } else {
-            throw new Exception("Name must be having a length of more than 1! Try again!");
+            throw new InvalidDetailException("Name must be having a length of more than 1! Try again!");
         }
     }
 
@@ -70,13 +83,13 @@ public abstract class Customer {
      * Sets the customer email
      * @param custEmail: String
      */
-    protected void setCustEmail(String custEmail) {
+    protected void setCustEmail(String custEmail) throws InvalidDetailException {
         // Check if the email matches email format
         Matcher matcher = emailFormat.matcher(custEmail);
         if (matcher.find()) {
             this.custEmail = custEmail;
         } else {
-            System.out.println("Invalid email! Try again!");
+            throw new InvalidDetailException("Invalid email! Try again!");
         }
     }
 

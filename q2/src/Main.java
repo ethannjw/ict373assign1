@@ -1,3 +1,5 @@
+import java.util.Scanner;
+
 /**
  * @title   Main
  * @desc    Main class that contains the menu for user navigation
@@ -10,14 +12,13 @@
 
 public class Main {
 
-    public static void main(String[] args) {
 
+
+
+    public static void main(String[] args) {
         Client client = new Client();
         client.displayStudentDetails();
-        client.printMonthlyEmails();
-        client.printWeeklyEmails();
-
-
+        client.promptMainOptions();
 
 
 

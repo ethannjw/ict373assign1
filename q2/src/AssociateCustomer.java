@@ -14,11 +14,19 @@ public class AssociateCustomer extends Customer{
     private ArrayList<Integer> supplements;
 
     /**
+     * Constructor constructs the customer name and email to empty string
+     */
+    public AssociateCustomer() {
+        super();
+        this.supplements = new ArrayList<Integer>();
+    }
+
+    /**
      * Constructor constructs the customer name and email
      * @param custName  String
      * @param custEmail String
      */
-    public AssociateCustomer(String custName, String custEmail) {
+    public AssociateCustomer(String custName, String custEmail) throws InvalidDetailException{
         super(custName, custEmail);
         this.supplements = new ArrayList<Integer>();
     }

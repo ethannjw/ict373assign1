@@ -20,7 +20,7 @@ public class PayingCustomer extends Customer {
      * @param custName: String
      * @param custEmail: String
      */
-    public PayingCustomer(String custName, String custEmail) {
+    public PayingCustomer(String custName, String custEmail) throws InvalidDetailException{
         super(custName, custEmail);
     }
 
