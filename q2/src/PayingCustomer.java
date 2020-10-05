@@ -16,6 +16,12 @@ public class PayingCustomer extends Customer {
     private ArrayList<Integer> associateCustomers = new ArrayList<Integer>();
 
     /**
+     * Empty Constructor initialises the customer
+     */
+    public PayingCustomer() {
+        super();
+    }
+    /**
      * Constructor constructs the customer name and email
      * @param custName: String
      * @param custEmail: String
@@ -37,11 +43,10 @@ public class PayingCustomer extends Customer {
      * @param creditCard    CreditCard class
      * @return boolean  Returns true if successful, false if not
      */
-    public boolean setCreditCard(CreditCard creditCard) {
+    public boolean setCreditCard(CreditCard creditCard) throws InvalidDetailException {
         if (this.paymentMethod != null) {
             if (this.paymentMethod.equals(creditCard)) {
-                System.out.println("Payment Method already exists!");
-                return false;
+                throw new InvalidDetailException("Payment Method already exists!");
             }
         }
         this.paymentMethod = creditCard;
@@ -53,11 +58,10 @@ public class PayingCustomer extends Customer {
      * @param bankAccount: bank account class
      * @return boolean  Returns true if successful, false if not
      */
-    public boolean setBankAccount(BankAccount bankAccount) {
+    public boolean setBankAccount(BankAccount bankAccount) throws InvalidDetailException{
         if (this.paymentMethod != null) {
             if (this.paymentMethod.equals(bankAccount)) {
-                System.out.println("Payment Method already exists!");
-                return false;
+                throw new InvalidDetailException("Payment Method already exists!");
             }
         }
         this.paymentMethod = bankAccount;

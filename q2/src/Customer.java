@@ -23,7 +23,7 @@ public abstract class Customer {
 
     /**
      * Invalid exception class that tells the user error message on invalid entry
-     * @param message in String
+     * @param msg in String
      */
     static class InvalidDetailException extends Exception {
         public InvalidDetailException(String msg) {

@@ -16,12 +16,19 @@ public class BankAccount extends PaymentMethod {
     private Pattern bankFormat = Pattern.compile("^(\\d{3}[ -]?){3}$");
 
     /**
+     * Constructor constructs the payer name
+     * @param payerName         Payer name in non zero length string
+     */
+    public BankAccount(String payerName) throws InvalidDetailException{
+        super(payerName);
+    }
+    /**
      * Constructor constructs the payer name, credit card number  and expiry date
      * @param payerName         Payer name in non zero length string
      * @param accountNumber     String (XXX-XXX-XXX) X: digits only
      * @param bankName              Name of Bank in string
      */
-    public BankAccount(String payerName, String accountNumber, String bankName) {
+    public BankAccount(String payerName, String accountNumber, String bankName) throws InvalidDetailException {
         super(payerName);
         this.setAccountNumber(accountNumber);
         this.setBankName(bankName);
@@ -31,14 +38,13 @@ public class BankAccount extends PaymentMethod {
      * @param accountNumber          The bank account number string
      * @return boolean              Returns true if successful, false if not
      */
-    public boolean setAccountNumber(String accountNumber) {
+    public boolean setAccountNumber(String accountNumber) throws InvalidDetailException{
         Matcher matcher = bankFormat.matcher(accountNumber);
         if (matcher.find()) {
             this.accountNumber = accountNumber;
             return true;
         } else {
-            System.out.println("Invalid Bank account number! Try again!");
-            return false;
+            throw new InvalidDetailException("Invalid Bank account number! Try again!");
         }
     }
 
@@ -47,13 +53,12 @@ public class BankAccount extends PaymentMethod {
      * @param bankName          The bank name string
      * @return boolean          Returns true if successful, false if not
      */
-    public boolean setBankName(String bankName) {
+    public boolean setBankName(String bankName) throws InvalidDetailException{
         if (bankName.length() > 0) {
             this.bankName = bankName;
             return true;
         } else {
-            System.out.println("Name must be having a length of more than 1! Try again!");
-            return false;
+            throw new InvalidDetailException("Name must be having a length of more than 1! Try again!");
         }
     }
 

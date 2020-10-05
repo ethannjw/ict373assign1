@@ -1,6 +1,12 @@
 
+
+import java.io.InputStreamReader;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 
@@ -17,8 +23,10 @@ import java.util.Scanner;
 public class Client {
     private char userInput;
     private Boolean runSystem;
-    private Scanner scanner;
+    private static final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
     private MagazineService magService;
+    private HashMap<String, String> weeklyEmails;
+    private HashMap<Integer, String> monthlyEmails;
 
     /**
      * Generates a new MagazineService with 7 customers and 4 supplements
@@ -27,6 +35,11 @@ public class Client {
         runSystem = true;
         userInput = '\0';
         magService = generateMagazineService();
+
+        weeklyEmails = new HashMap<String, String>();
+        monthlyEmails = new HashMap<Integer, String>();
+        this.recordWeeklyEmails();
+        this.recordMonthlyEmails();
     }
 
     /**
@@ -115,20 +128,46 @@ public class Client {
             s.setMagPayingCustomer(payer3);
 
         }
-        catch (Customer.InvalidDetailException e) {
+        catch (Customer.InvalidDetailException | PaymentMethod.InvalidDetailException e) {
             System.out.println("Adding customer failed!");
             System.exit(1);
         }
         return s;
     }
+
+    /**
+     * Records the hardcoded weekly emails for all magazines and customers
+     */
+    private void recordWeeklyEmails() {
+        for (Magazine mag : magService.getMagazines()) {
+            String weeklyEmail = magService.printWeeklyEmail(mag);
+            weeklyEmails.put(mag.getMagName(), weeklyEmail);
+        }
+    }
+    /**
+     * Records the hardcoded monthly emails for all paying customers
+     */
+    private void recordMonthlyEmails() {
+        for (PayingCustomer payer : magService.getMagPayingCustomers()) {
+            int payerId = payer.getCustId();
+            String monthlyEmail = magService.printMonthlyEmail(payer);
+            monthlyEmails.put(payerId, monthlyEmail);
+        }
+    }
+
     /**
      * Part C
      * Prints weekly emails for all magazines and customers
      */
     public void printWeeklyEmails() {
-
+        if (weeklyEmails.isEmpty()) {
+            this.recordWeeklyEmails();
+        }
         System.out.println("---------------------All Weekly Emails--------------------");
-        System.out.println(magService.printWeeklyEmails());
+
+        for (String weeklyEmail : weeklyEmails.values()) {
+            System.out.println(weeklyEmail);
+        }
         System.out.println("--------------------Done Weekly Emails--------------------");
     }
 
@@ -137,9 +176,13 @@ public class Client {
      * Prints bill emails for all paying customers
      */
     public void printMonthlyEmails() {
-
+        if (monthlyEmails.isEmpty()) {
+            this.recordMonthlyEmails();
+        }
         System.out.println("--------------------Print Monthly Emails------------------");
-        System.out.println(magService.printMonthlyEmails());
+        for (String monthlyEmail : monthlyEmails.values()) {
+            System.out.println(monthlyEmail);
+        }
         System.out.println("--------------------Done Monthly Emails-------------------");
     }
     /**
@@ -258,15 +301,17 @@ public class Client {
         runSystem = false;
     }
 
-    private void promptAddCustomer() {
-        System.out.println("Adding an associate customer");
-        promptAddAssociateCustomer();
-    }
-
     private void promptContinue() {
-
+        String choice = "";
         System.out.println("Press enter to continue, 'q' to quit");
-        String choice = scanner.nextLine();
+        try {
+            choice = reader.readLine();
+        }
+        catch (IOException e) {
+            System.out.println("Invalid Input! Try again!");
+            this.promptContinue();
+        }
+
         while (!choice.equalsIgnoreCase("q")) {
             promptMainOptions();
         }
@@ -274,13 +319,390 @@ public class Client {
         System.exit(0);
 
     }
+
+    /**
+     * Collects input required for adding a new paying customer.
+     * Part E
+     * Performed by menu option [4].
+     */
+    private void promptAddPayingCustomer() {
+        String custName = "";
+        String custEmail = "";
+        String associateCustName = "";
+        AssociateCustomer associateCustomer;
+        // add customer name
+        while (custName.isEmpty()) {
+            try {
+                System.out.print("Customer's name: ");
+                custName = reader.readLine();
+            } catch (IOException e) {
+                System.out.println(e);
+                custName = "";
+            }
+        }
+
+        // add customer email
+        while (custEmail.isEmpty()) {
+            try {
+                System.out.print("Customer's email: ");
+                custEmail = reader.readLine();
+            } catch (IOException e) {
+                System.out.println(e);
+                custEmail = "";
+            }
+        }
+        PayingCustomer payer = promptAddPayingCustomer(custName, custEmail);
+
+        // add customer that payer is paying for
+        while (true) {
+            try {
+                System.out.print("Associate Customer's name: ");
+                associateCustName = reader.readLine();
+            } catch (IOException e) {
+                System.out.println(e);
+                associateCustName = "";
+            }
+            if ((associateCustomer = magService.getAssociateCustomer(associateCustName)) != null) {
+                payer.setAssociateCustomer(associateCustomer);
+                break;
+            } else {
+                System.out.println("Customer " + associateCustName + " not found! Try Again!");
+            }
+        }
+
+        magService.setMagPayingCustomer(payer);
+        System.out.println("Sucessfully added new paying customer");
+    }
+
+    /**
+     * Collects payment method input required for adding a new paying customer.
+     * @param custName
+     * @param custEmail
+     */
+    private PayingCustomer promptAddPayingCustomer(String custName, String custEmail) {
+        String paymentMethodOption = "";
+        PaymentMethod paymentMtd;
+        String paymentName = "";
+        String paymentNumber = "";
+        String bankName = "";
+        LocalDate exp = null;
+        PayingCustomer payer = new PayingCustomer();
+        System.out.println("Enter your payment details: ");
+        // first create a new paying customer with existing customer detail
+        try {
+            payer.setCustName(custName);
+            payer.setCustEmail(custEmail);
+        } catch (Customer.InvalidDetailException e) {
+            System.out.println(e);
+        }
+        // get user payment method
+        while (true) {
+            System.out.println("Select customer's payment method:");
+            System.out.println("[0] Credit Card");
+            System.out.println("[1] Bank Account");
+            System.out.print("Select option: ");
+            try {
+                paymentMethodOption = reader.readLine();
+            }
+            catch (IOException e) {
+                System.out.println(e);
+                continue;
+            }
+            if (!paymentMethodOption.equals("0") && !paymentMethodOption.equals("1")) {
+                System.out.println("Invalid Entry! Try again!");
+                continue;
+            } else {
+                break;
+            }
+        }
+
+        // enter the payment name from user
+        while(true) {
+            System.out.print("Customer's name in bank or card: ");
+            try {
+                paymentName = reader.readLine();
+            }
+            catch (IOException e) {
+                System.out.println(e);
+                continue;
+            }
+            if (paymentName.equals("")) {   // check that name is not empty
+                System.out.println("Name cannot be empty! Try again!");
+            } else {
+                if (paymentMethodOption.equals("0")) {  // credit card
+                    try {
+                        paymentMtd = new CreditCard(paymentName);  // create new instance
+                        break;
+                    } catch (PaymentMethod.InvalidDetailException e) {  // exit entering payment detail if fail
+                        System.out.println(e);
+                    }
+                }   else {
+                    try {
+                        paymentMtd = new BankAccount(paymentName);  // create new instance
+                        break;
+                    } catch (PaymentMethod.InvalidDetailException e) {  // exit entering payment detail if fail
+                        System.out.println(e);
+                    }
+                }
+            }
+
+        }
+        // enter the credit card number
+        if (paymentMethodOption.equals("0")) {  // credit card
+            while(true) {
+                System.out.print("Customer's credit card number in (XXXX-XXXX-XXXX-XXXX): ");
+                try {
+                    paymentNumber = reader.readLine();
+                }
+                catch (IOException e) {
+                    System.out.println(e);
+                    continue;
+                }
+                if (paymentName.equals("")) {
+                    System.out.println("Invalid Entry! Try again!");
+                    continue;
+                }
+                // try to record the payment detail
+                try {
+                    ((CreditCard)paymentMtd).setCreditCardNumber(paymentNumber);
+                    break;
+                } catch (PaymentMethod.InvalidDetailException e) {
+                    System.out.println(e);
+                }
+            }
+        }
+
+        // enter the credit card date
+        if (paymentMethodOption.equals("0")) {  // credit card
+            String year = "";
+            String mth = "";
+            Integer yearInt = 1900;
+            Integer mthInt = 0;
+
+            // get the year from user
+            while(true) {
+                System.out.print("Customer's credit card expiry date year in (YYYY): ");
+                try {
+                    year = reader.readLine();
+                }
+                catch (IOException e) {
+                    System.out.println(e);
+                    continue;
+                }
+                System.out.print("Customer's credit card expiry date mth in (MM): ");
+                try {
+                    mth = reader.readLine();
+                }
+                catch (IOException e) {
+                    System.out.println(e);
+                    continue;
+                }
+                if (year.equals("") | mth.equals("")) {
+                    System.out.println("Invalid Entry! Try again!");
+                } else {
+                    try {
+                        yearInt = Integer.parseInt(year);
+                        mthInt = Integer.parseInt(mth);
+                    } catch (NumberFormatException e) {
+                        System.out.println("Invalid Entry:" + e);
+                    }
+                    try {
+                        exp = LocalDate.of(yearInt, mthInt,1);
+                        ((CreditCard) paymentMtd).setExpiry(exp);
+                        break;
+                    } catch (PaymentMethod.InvalidDetailException | DateTimeException e) {  // check if the date is in future and if the date is valid
+                        System.out.println(e);
+                    }
+
+                }
+            }
+            // store the credit card
+            try {
+                payer.setCreditCard((CreditCard) paymentMtd);
+                System.out.println("Successfully stored credit card details");
+            }
+            catch (Customer.InvalidDetailException e) {
+                System.out.println(e);
+            }
+        }   // end credit card
+
+        // enter the bank account details
+        else {
+            // enter the bank account number
+            while(true) {
+                System.out.print("Customer's bank account number in (XXX-XXX-XXX): ");
+                try {
+                    paymentNumber = reader.readLine();
+                }
+                catch (IOException e) {
+                    System.out.println(e);
+                    continue;
+                }
+                if (paymentName.equals("")) {
+                    System.out.println("Invalid Entry! Try again!");
+                    continue;
+                }
+                // try to record the payment detail
+                try {
+                    ((BankAccount)paymentMtd).setAccountNumber(paymentNumber);
+                    break;
+                } catch (PaymentMethod.InvalidDetailException e) {
+                    System.out.println(e);
+                }
+            }
+
+            // get the bank name from user
+            while(true) {
+                System.out.print("Customer's Bank Name: ");
+                try {
+                    bankName = reader.readLine();
+                }
+                catch (IOException e) {
+                    System.out.println(e);
+                    continue;
+                }
+
+                if (bankName.equals("") ) {
+                    System.out.println("Invalid Entry! Try again!");
+                } else {
+                    try {
+                        ((BankAccount) paymentMtd).setBankName(bankName);
+                        break;
+                    } catch (PaymentMethod.InvalidDetailException e) {  // check if the date is in future and if the date is valid
+                        System.out.println(e);
+                    }
+                }
+            }
+            try {
+                payer.setBankAccount((BankAccount) paymentMtd);
+                System.out.println("Successfully stored bank details");
+            }
+            catch (Customer.InvalidDetailException e) {
+                System.out.println(e);
+            }
+        }   // end bank account
+
+        return payer;
+    }
+
+    /**
+     * Collects input required for adding a new associate customer.
+     * Part E
+     * Performed by menu option [3].
+     */
+    private void promptAddAssociateCustomer() {
+        System.out.println("Adding an associate customer");
+        String custName = "";
+        String custEmail = "";
+        String supplementID;
+        Supplement supp;
+        int suppId;
+        List<String> supplements = new ArrayList<String>();
+        AssociateCustomer associateCustomer = new AssociateCustomer();
+        PayingCustomer payer;
+
+        // add customer name
+        while (custName.isEmpty()) {
+            try {
+                System.out.print("Customer's name: ");
+                custName = reader.readLine();
+                associateCustomer.setCustName(custName);
+            } catch (Customer.InvalidDetailException | IOException e) {
+                System.out.println(e);
+                custName = "";
+            }
+        }
+
+        // add customer email
+        while (custEmail.isEmpty()) {
+            try {
+                System.out.print("Customer's email: ");
+                custEmail = reader.readLine();
+                associateCustomer.setCustEmail(custEmail);
+            } catch (Customer.InvalidDetailException | IOException e) {
+                System.out.println(e);
+                custEmail = "";
+            }
+        }
+
+        // select supplement(s) that customer will subscribe to
+        while (true) {
+            System.out.println("Would you like to subscribe to additional supplements? Enter a supplement ID or an empty entry to skip: ");
+            System.out.println(magService.printAllSupplements());
+            try {
+                supplementID = reader.readLine();
+            }
+            catch (IOException e) {
+                System.out.println(e);
+                continue;
+            }
+
+            if (supplementID.equals("")) {
+                System.out.println("Exiting Supplement entry");
+                break;
+            } else {
+                try {
+                    suppId = Integer.parseInt(supplementID);
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid entry! Please try again!");
+                    continue;
+                }
+                if ((supp = magService.getSupplement(suppId)) != null) {
+                    // check if customer already subscribed to the supplement
+                    if (associateCustomer.getSupplements().contains(suppId)){
+                        System.out.println("You have already subscribed to: " + supp.getSuppName());
+                        continue;
+                    }
+                    associateCustomer.setSupplement(supp);
+                    System.out.println("Congratulations! You have subscribed to: " + supp.getSuppName());
+
+                } else {
+                    System.out.println(supplementID + " is not a valid supplement. Please try again!");
+                }
+            }
+        }
+
+        String paymentDetailsOption = "";
+        // check if the customer wants to insert paying customer or wait till another time
+        while(true) {
+
+            System.out.println("Enter your payment details now? N for no or press enter to enter details");
+            try {
+                paymentDetailsOption = reader.readLine();
+                break;
+            }
+            catch (IOException e) {
+                System.out.println(e);
+            }
+        }
+
+        if (paymentDetailsOption.equals("")) {
+            // get the payer
+            payer = promptAddPayingCustomer(custName, custEmail);
+            // store the associate customer in the payer
+            payer.setAssociateCustomer(associateCustomer);
+            magService.setMagPayingCustomer(payer);
+        }
+
+        // record the associate customer
+        magService.setAssociateCustomer(associateCustomer);
+
+        System.out.println("** Customer added.");
+    }
+
     /**
      * Performs action designated to option.
      * @param {char} option
      */
     private void runOption(char option) {
         // reset line from input from options prompt, otherwise nextLine is skipped.
-        scanner.nextLine();
+//        try {
+//            reader.readLine();
+//        }
+//        catch (IOException e) {
+//            System.out.println(e);
+//            this.promptMainOptions();
+//        }
 
         switch (option) {
             case '1':
@@ -292,240 +714,29 @@ public class Client {
                 promptContinue();
                 break;
             case '3':
-                promptAddCustomer();
+                promptAddAssociateCustomer();
                 promptContinue();
                 break;
-//            case '4':
-//                promptRemoveCustomer();
-//                promptContinue();
-//                break;
+            case '4':
+                promptAddPayingCustomer();
+                promptContinue();
+                break;
 //            case '5':
-//                listCustomers();
+//                promptRemoveAssociateCustomer();
 //                promptContinue();
 //                break;
 //            case '6':
-//                System.out.println(magService.printAllSupplements());
+//                promptRemovePayingCustomer();
 //                promptContinue();
 //                break;
 //            case 'q':
 //                exitSystem();
 //                break;
             default:
-                System.out.println("** Invalid option selected.");
+                System.out.println("Information: Invalid option selected.");
                 break;
         }
-    }
-//    /**
-//     * Collects input required for adding a new customer.
-//     * Part E
-//     * Performed by menu option [4].
-//     */
-//    public void promptRemoveCustomer() {
-//        private void promptAddCustomer() {
-//            String paying = "";
-//            String paymentMethodOption = "";
-//            String name = "";
-//            String email = "";
-//            String paymentMethod = "";
-//            String paymentNumber = "";
-//            String existingCustomerID = "";
-//            String supplementID;
-//            List<String> supplements = new ArrayList<String>();
-//
-//            while (name.isEmpty()) {
-//                System.out.print("Customer's name: ");
-//                name = scanner.nextLine();
-//            }
-//
-//            while (email.isEmpty()) {
-//                System.out.print("Customer's email: ");
-//                email = scanner.nextLine();
-//            }
-//
-//            while (!paying.equals("y") && !paying.equals("n")) {
-//                System.out.print("Is the customer paying? (y/n) ");
-//                paying = scanner.nextLine();
-//            }
-//
-//            // change questions based on whether the customer is paying or an associate
-//            if (paying.equals("y")) {
-//                while (!paymentMethodOption.equals("0") && !paymentMethodOption.equals("1")) {
-//                    System.out.println("Select customer's payment method:");
-//                    System.out.println("[0] Credit");
-//                    System.out.println("[1] Debit");
-//                    System.out.print("Select option: ");
-//                    paymentMethodOption = scanner.nextLine();
-//                }
-//
-//                if (paymentMethodOption.equals("0")) {
-//                    paymentMethod = "Credit";
-//                } else {
-//                    paymentMethod = "Debit";
-//                }
-//
-//                while (paymentNumber.isEmpty()) {
-//                    System.out.print("Customer's payment number: ");
-//                    paymentNumber = scanner.nextLine();
-//                }
-//            } else {
-//                while (true) {
-//                    System.out.print("ID of existing customer paying for new customer: ");
-//                    existingCustomerID = scanner.nextLine();
-//
-//                    if (customers.isValidPayer(existingCustomerID)) {
-//                        break;
-//                    } else {
-//                        System.out.printf("\"%s\" is not a valid paying customer ID.\n", existingCustomerID);
-//                    }
-//                }
-//            }
-//
-//            // select supplement(s) that customer will subscribe to
-//            while (true) {
-//                System.out.printf("Enter a supplement ID or an empty entry to skip/continue: ");
-//                supplementID = scanner.nextLine();
-//
-//                if (supplementID.equals("")) {
-//                    break;
-//                } else {
-//                    if (mag.hasSupplement(supplementID)) {
-//                        System.out.printf("** \"%s\" added.\n", supplementID);
-//                        supplements.add(supplementID);
-//                    } else {
-//                        System.out.printf("\"%s\" is not a valid supplement.\n", supplementID);
-//                    }
-//                }
-//            }
-//
-//            customers.add(
-//                    name,
-//                    email,
-//                    supplements,
-//                    paying.equals("y"),
-//                    paymentMethod,
-//                    paymentNumber,
-//                    existingCustomerID
-//            );
-//
-//            System.out.println("** Customer added.");
-//        }
-//    }
-
-    /**
-     * Collects input required for adding a new customer.
-     * Part E
-     * Performed by menu option [3].
-     */
-    private void promptAddAssociateCustomer() {
-        String custName = "";
-        String custEmail = "";
-        String supplementID;
-        Supplement supp;
-        int suppId;
-        List<String> supplements = new ArrayList<String>();
-        AssociateCustomer associateCustomer = new AssociateCustomer();
-
-        // add customer name
-        while (custName.isEmpty()) {
-            try {
-                System.out.print("Customer's name: ");
-                custName = scanner.nextLine();
-                associateCustomer.setCustName(custName);
-            } catch (Customer.InvalidDetailException e) {
-                System.out.println(e);
-                custName = "";
-            }
-        }
-
-        // add customer email
-        while (custEmail.isEmpty()) {
-            try {
-                System.out.print("Customer's email: ");
-                custEmail = scanner.nextLine();
-                associateCustomer.setCustEmail(custEmail);
-            } catch (Customer.InvalidDetailException e) {
-                System.out.println(e);
-                custEmail = "";
-            }
-        }
-
-
-        // select supplement(s) that customer will subscribe to
-        while (true) {
-            System.out.print("Would you like to subscribe to additional supplements? Enter a supplement ID or an empty entry to skip: ");
-            System.out.println(magService.printAllSupplements());
-
-            supplementID = scanner.nextLine();
-
-            if (supplementID.equals("")) {
-                break;
-            } else {
-                try {
-                    suppId = Integer.parseInt(supplementID);
-                } catch (NumberFormatException e) {
-                    System.out.println("Invalid entry! Please try again!");
-                    continue;
-                }
-                if ((supp = magService.getSupplement(suppId)) != null) {
-                    System.out.println("Congratulations! You have subscribed to: " + supp.getSuppName());
-
-                } else {
-                    System.out.println(supplementID + " is not a valid supplement. Please try again!");
-                }
-            }
-        }
-//
-//
-//        while (!paying.equals("y") && !paying.equals("n")) {
-//            System.out.print("Is the customer paying? (y/n) ");
-//            paying = scanner.nextLine();
-//        }
-//
-//        // change questions based on whether the customer is paying or an associate
-//        if (paying.equals("y")) {
-//            while (!paymentMethodOption.equals("0") && !paymentMethodOption.equals("1")) {
-//                System.out.println("Select customer's payment method:");
-//                System.out.println("[0] Credit");
-//                System.out.println("[1] Debit");
-//                System.out.print("Select option: ");
-//                paymentMethodOption = scanner.nextLine();
-//            }
-//
-//            if (paymentMethodOption.equals("0")) {
-//                paymentMethod = "Credit";
-//            } else {
-//                paymentMethod = "Debit";
-//            }
-//
-//            while (paymentNumber.isEmpty()) {
-//                System.out.print("Customer's payment number: ");
-//                paymentNumber = scanner.nextLine();
-//            }
-//        } else {
-//            while (true) {
-//                System.out.print("ID of existing customer paying for new customer: ");
-//                existingCustomerID = scanner.nextLine();
-//
-//                if (customers.isValidPayer(existingCustomerID)) {
-//                    break;
-//                } else {
-//                    System.out.printf("\"%s\" is not a valid paying customer ID.\n", existingCustomerID);
-//                }
-//            }
-//        }
-//
-//
-//        customers.add(
-//                custName,
-//                custEmail,
-//                supplements,
-//                paying.equals("y"),
-//                paymentMethod,
-//                paymentNumber,
-//                existingCustomerID
-//        );
-//
-//        System.out.println("** Customer added.");
+        promptMainOptions();
     }
 
     /**
@@ -534,19 +745,25 @@ public class Client {
     public void promptMainOptions() {
         while (runSystem) {
             System.out.println("-------------------------------------------------------");
-            System.out.printf("Welcome to the \"%s\" management system.\n", "Scam Magazines");
+            System.out.println("Welcome to the Scam Magazines management system.");
             System.out.println("Please select an option below:");
             System.out.println("[1] Show weekly email for all customers.");
             System.out.println("[2] Show monthly email for paying customers.");
-            System.out.println("[3] Add a customer.");
-            System.out.println("[4] Remove a customer.");
-            System.out.println("[5] List all customers.");
-            System.out.println("[6] List all supplements.");
+            System.out.println("[3] Add an associate customer.");
+            System.out.println("[4] Add a paying customer.");
+            System.out.println("[5] Remove an associate customer.");
+            System.out.println("[6] Remove a paying customer.");
             System.out.println("[q] Exit the system.");
             System.out.println("-------------------------------------------------------");
 
-            System.out.print("Select option: ");
-            userInput = scanner.next().charAt(0);
+            System.out.println("Select option: ");
+            try {
+                userInput = reader.readLine().charAt(0);
+            }
+            catch (IOException e) {
+                System.out.println(e);
+                this.promptMainOptions();
+            }
 
             runOption(userInput);
         }

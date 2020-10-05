@@ -21,12 +21,21 @@ public class CreditCard extends PaymentMethod {
     private Pattern ccFormat = Pattern.compile("^(\\d{4}[ -]?){4}$");
 
     /**
+     * Empty Constructor
+     * Initialises the payment method holder name
+     */
+    public CreditCard(String name) throws InvalidDetailException {
+        super(name);
+        creditCardNumber = "";
+        this.setExpiry(LocalDate.of(3000,1,1));
+    }
+    /**
      * Constructor constructs the payer name, credit card number  and expiry date
      * @param payerName         Payer name in non zero length string
      * @param creditCardNumber  String (XXXX-XXXX-XXXX-XXXX) X: digits only
      * @param expiry            LocalDate, usage, LocalDate.of(2023, 5, 1)
      */
-    public CreditCard(String payerName, String creditCardNumber, LocalDate expiry) {
+    public CreditCard(String payerName, String creditCardNumber, LocalDate expiry) throws InvalidDetailException{
         super(payerName);
         this.setCreditCardNumber(creditCardNumber);
         this.setExpiry(expiry);
@@ -52,14 +61,13 @@ public class CreditCard extends PaymentMethod {
      * @param creditCardNumber       The credit card number string
      * @return boolean      Returns true if successful, false if not
      */
-    public boolean setCreditCardNumber(String creditCardNumber) {
+    public boolean setCreditCardNumber(String creditCardNumber) throws InvalidDetailException {
         Matcher matcher = ccFormat.matcher(creditCardNumber);
         if (matcher.find()) {
             this.creditCardNumber = creditCardNumber;
             return true;
         } else {
-            System.out.println("Invalid email! Try again!");
-            return false;
+            throw new InvalidDetailException("Invalid credit card number! Format is XXXX-XXXX-XXXX-XXXX X: digits only");
         }
     }
 
@@ -68,11 +76,10 @@ public class CreditCard extends PaymentMethod {
      * @param expiry        The expiry date LocalDate
      * @return boolean      Returns true if successful, false if not
      */
-    public Boolean setExpiry(LocalDate expiry) {
+    public Boolean setExpiry(LocalDate expiry) throws InvalidDetailException{
         LocalDate today = LocalDate.now();
         if (expiry.isBefore(today)) {
-            System.out.println("Expiry date must be in the future!");
-            return false;
+            throw new InvalidDetailException("Expiry date must be in the future!");
 
         } else {
             this.expiry = expiry;

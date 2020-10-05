@@ -150,6 +150,19 @@ public class MagazineService {
     }
 
     /**
+     * Returns the AssociateCustomer based on name
+     * @return associateCustomer    Returns the List of Associate Customers currently present
+     */
+    public AssociateCustomer getAssociateCustomer(String custName) {
+        for (AssociateCustomer customer: this.magCustomers) {
+            if (customer.getCustName().equalsIgnoreCase(custName)) {
+                return customer;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Removes a specified customer the weekly email for all magazines based on customer ID
      * @param custId: int
      * @return boolean  true if successful removal

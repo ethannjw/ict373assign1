@@ -11,11 +11,28 @@ public abstract class PaymentMethod {
     private String payerName;
 
     /**
+     * Invalid exception class that tells the user error message on invalid entry
+     */
+    static class InvalidDetailException extends Exception {
+        public InvalidDetailException(String msg) {
+            super(msg);
+        }
+    }
+
+    /**
+     * Empty Constructor
+     * Initialises the payment method holder name
+     */
+    public PaymentMethod(){
+        payerName = "";
+    }
+
+    /**
      * Constructor
      * Initialises the payment method holder name
      * @param payerName           Name of payment method holder in String
      */
-    public PaymentMethod(String payerName){
+    public PaymentMethod(String payerName) throws InvalidDetailException{
         this.setPayerName(payerName);
     }
 
@@ -32,13 +49,12 @@ public abstract class PaymentMethod {
      * @param payerName       The payer name string
      * @return boolean      Returns true if successful, false if not
      */
-    public Boolean setPayerName(String payerName) {
+    public Boolean setPayerName(String payerName) throws InvalidDetailException{
         if (payerName.length() > 0) {
             this.payerName = payerName;
             return true;
         } else {
-            System.out.println("Name must be having a length of more than 1! Try again!");
-            return false;
+            throw new InvalidDetailException("Name must be having a length of more than 1! Try again!");
         }
 
     }
