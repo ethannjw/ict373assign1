@@ -103,10 +103,10 @@ public class Magazine {
     public boolean equals(Object otherMagazine) {
         Magazine magazine = (Magazine) otherMagazine;
 
-        if (magazine.magWeeklyCost != this.magWeeklyCost) {
+        if (magazine.getMagWeeklyCost() != this.magWeeklyCost) {
             return false;
         }
-        if (!magName.equalsIgnoreCase((magazine.magName))) {
+        if (!magazine.getMagName().equalsIgnoreCase((this.magName))) {
             return false;
         }
         return true;

@@ -8,7 +8,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Scanner;
 
 /**
  * @title   Client
@@ -76,10 +75,10 @@ public class Client {
             Magazine mag3 = new Magazine("Exercise Magazine", 12.20);
             Magazine mag4 = new Magazine("Empty Magazine", 12.20);
 
-            s.setMags(mag1);
-            s.setMags(mag2);
-            s.setMags(mag3);
-            s.setMags(mag4);
+            s.setMagazine(mag1);
+            s.setMagazine(mag2);
+            s.setMagazine(mag3);
+            s.setMagazine(mag4);
             Supplement sup1 = new Supplement("Java Rocks", 32.32);
             Supplement sup2 = new Supplement("Go Lang!", 2.34);
             Supplement sup3 = new Supplement("WooHoo", 12.3);
@@ -160,9 +159,9 @@ public class Client {
      * Prints weekly emails for all magazines and customers
      */
     public void printWeeklyEmails() {
-        if (weeklyEmails.isEmpty()) {
-            this.recordWeeklyEmails();
-        }
+
+        this.recordWeeklyEmails();
+
         System.out.println("---------------------All Weekly Emails--------------------");
 
         for (String weeklyEmail : weeklyEmails.values()) {
@@ -176,55 +175,59 @@ public class Client {
      * Prints bill emails for all paying customers
      */
     public void printMonthlyEmails() {
-        if (monthlyEmails.isEmpty()) {
-            this.recordMonthlyEmails();
-        }
+
+        this.recordMonthlyEmails();
+
         System.out.println("--------------------Print Monthly Emails------------------");
         for (String monthlyEmail : monthlyEmails.values()) {
             System.out.println(monthlyEmail);
         }
         System.out.println("--------------------Done Monthly Emails-------------------");
     }
+
     /**
      * Part E
      * Adds new associate customer with name and email as input
      * @param custName: String
      * @param custEmail: String
      */
-    public void addNewAssociateCustomer(String custName, String custEmail) {
+    public boolean addNewAssociateCustomer(String custName, String custEmail) {
         try{
             AssociateCustomer newCust = new AssociateCustomer(custName, custEmail);
             this.magService.setAssociateCustomer(newCust);
+            return true;
         }
         catch (Customer.InvalidDetailException e) {
             System.out.println("Adding customer failed!");
+            return false;
         }
-
     }
+
     /**
      * Part E
      * Adds new paying customer with name and email as input
      * @param custName: String
      * @param custEmail: String
      */
-    public void addNewPayingCustomer(String custName, String custEmail) {
+    public boolean addNewPayingCustomer(String custName, String custEmail) {
         try {
             PayingCustomer newCust = new PayingCustomer(custName, custEmail);
             this.magService.setMagPayingCustomer(newCust);
         }
         catch (Customer.InvalidDetailException e) {
             System.out.println("Adding customer failed!");
+            return false;
         }
-
-
+        return true;
     }
+
     /**
      * Part F
      * Removes associate customer with name and email as input
      * @param custName: String
      * @param custEmail: String
      */
-    public void removeAssociateCustomer(String custName, String custEmail) {
+    public boolean removeAssociateCustomer(String custName, String custEmail) {
 
         List<AssociateCustomer> cust = this.magService.getAssociateCustomers();
         for (AssociateCustomer c : cust) {
@@ -232,75 +235,108 @@ public class Client {
                 // Found customer to delete
                 if (this.magService.remCustomer(c)) {
                     System.out.println("Successfully removed customer: " + c.getCustName() + "\n");
-                    return; // customer removal success
+                    return true; // customer removal success
                 } else {
                     System.out.println("Unable to remove customer: " + c.getCustName());
+                    return false;
                 }
             }
         }
         System.out.println("No such customer");
+        return false;
     }
+
     /**
      * Part F
      * Removes paying customer with name and email as input
      * @param custName: String
      * @param custEmail: String
      */
-    public void removePayingCustomer(String custName, String custEmail) {
-
+    public boolean removePayingCustomer(String custName, String custEmail) {
         List<PayingCustomer> cust = this.magService.getMagPayingCustomers();
         for (PayingCustomer c : cust) {
             if (c.getCustName().equals(custName) && c.getCustEmail().equals(custEmail)) {
                 // Found customer to delete
                 if (this.magService.remCustomer(c)) {
                     System.out.println("Successfully removed customer: " + c.getCustName() + "\n");
-                    return; // customer removal success
+                    return true; // customer removal success
                 } else {
                     System.out.println("Unable to remove customer: " + c.getCustName());
+                    return false;
                 }
             }
         }
         System.out.println("No such customer");
+        return false;
     }
 
-//    /**
-//     * Displays list of customers.
-//     * Performed by option [5].
-//     */
-//    private void listCustomers() {
-//        Customer customer;
-//        ArrayList<Customer> all = customers.getAll();
-//        ArrayList<String> supplements;
-//
-//        for (int i = 0; i < all.size(); i++) {
-//            customer = all.get(i);
-//            supplements = customer.getSupplements();
-//            System.out.println("-------------------------------------------------------");
-//            System.out.printf("| %-16s | %-32s |\n", "ID",            customer.getID());
-//            System.out.printf("| %-16s | %-32s |\n", "Name",          customer.getName());
-//            System.out.printf("| %-16s | %-32s |\n", "Email",         customer.getEmail());
-//            System.out.printf("| %-16s | %-32s |\n", "Supplement(s)", supplements.size() > 0 ? supplements : "None");
-//
-//            if (customer.isPaying()) {
-//                PayingCustomer payer = (PayingCustomer) customer;
-//                ArrayList<String> associates = payer.getAssociates();
-//                System.out.printf("| %-16s | %-32s |\n", "Payment method", payer.getPaymentMethod());
-//                System.out.printf("| %-16s | %-32s |\n", "Payment number", payer.getPaymentNumber());
-//                System.out.printf("| %-16s | %-32s |\n", "Associate(s)", associates.size() > 0 ? associates : "None");
-//            }
-//        }
-//
-//        System.out.println("-------------------------------------------------------");
-//    }
     /**
-     * Breaks loop and exits program.
-     * Performed by option [q].
+     * Part F
+     * Prompt Removes paying customer retrieving user name and email as input
      */
-    private void exitSystem() {
-        System.out.println("Exiting system.");
-        runSystem = false;
+    private void promptRemovePayingCustomer() {
+        String custName = "";
+        String custEmail = "";
+        // add customer name
+        while (custName.isEmpty()) {
+            try {
+                System.out.print("Customer's name: ");
+                custName = reader.readLine();
+            } catch (IOException e) {
+                System.out.println(e);
+                custName = "";
+            }
+        }
+
+        // add customer email
+        while (custEmail.isEmpty()) {
+            try {
+                System.out.print("Customer's email: ");
+                custEmail = reader.readLine();
+            } catch (IOException e) {
+                System.out.println(e);
+                custEmail = "";
+            }
+        }
+        // remove the customer
+        removePayingCustomer(custName, custEmail);
     }
 
+    /**
+     * Part F
+     * Prompt Removes associate customer retrieving user name and email as input
+     */
+    private void promptRemoveAssociateCustomer() {
+        String custName = "";
+        String custEmail = "";
+        // add customer name
+        while (custName.isEmpty()) {
+            try {
+                System.out.print("Customer's name: ");
+                custName = reader.readLine();
+            } catch (IOException e) {
+                System.out.println(e);
+                custName = "";
+            }
+        }
+
+        // add customer email
+        while (custEmail.isEmpty()) {
+            try {
+                System.out.print("Customer's email: ");
+                custEmail = reader.readLine();
+            } catch (IOException e) {
+                System.out.println(e);
+                custEmail = "";
+            }
+        }
+        // remove the customer
+        removeAssociateCustomer(custName, custEmail);
+    }
+
+    /**
+     * Continue option that runs after each option to allow user to quit
+     */
     private void promptContinue() {
         String choice = "";
         System.out.println("Press enter to continue, 'q' to quit");
@@ -689,28 +725,119 @@ public class Client {
 
         System.out.println("** Customer added.");
     }
+    /**
+     * Adds a new supplement based on magazine name and weekly cost
+     * @param magName
+     * @param magWeeklyCost
+     */
+    public boolean addNewMagazine(String magName, double magWeeklyCost) {
+        // create the new supplement
+        Magazine newMag = new Magazine(magName, magWeeklyCost);
 
+        if (magService.setMagazine(newMag)) {
+            System.out.println("Add Magazine Successful");
+            return true;
+        } else {
+            System.out.println("Add Magazine not successful");
+            return false;
+        }
+    }
+    /**
+     * Collects input required for adding a new magazine.
+     * Part A
+     * Performed by menu option [7].
+     */
+    private void promptAddNewMagazine() {
+        String magName = "";
+        double magWeeklyCost = 0.0;
+
+        // add magazine name
+        while (magName.isEmpty()) {
+            try {
+                System.out.print("Magazine's name: ");
+                magName = reader.readLine();
+            } catch (IOException e) {
+                System.out.println(e);
+                magName = "";
+            }
+        }
+
+        // add weekly cost
+        while (magWeeklyCost == 0.0) {
+            try {
+                System.out.print("Magazine weekly cost: ");
+                magWeeklyCost = Double.parseDouble(reader.readLine());
+            } catch (IOException | NumberFormatException e) {
+                System.out.println(e);
+                magWeeklyCost = 0.0;
+            }
+        }
+        addNewMagazine(magName, magWeeklyCost);
+    }
+    /**
+     * Adds a new supplement based on supplement name and supplenment cost
+     * @param suppName
+     * @param suppCost
+     */
+    public boolean addNewSupplement(String suppName, double suppCost) {
+        // create the new supplement
+        Supplement newSupp = new Supplement(suppName, suppCost);
+
+        if (magService.setSupplement(newSupp)) {
+            System.out.println("Add Supplement Successful");
+            return true;
+        } else {
+            System.out.println("Add Supplement not successful");
+            return false;
+        }
+    }
+
+    /**
+     * Collects input required for adding a new supplement.
+     * Part A
+     * Performed by menu option [8].
+     */
+    private void promptAddNewSupplement() {
+        String suppName = "";
+        double suppCost = 0.0;
+
+        // add supplement name
+        while (suppName.isEmpty()) {
+            try {
+                System.out.print("Supplement's name: ");
+                suppName = reader.readLine();
+            } catch (IOException e) {
+                System.out.println(e);
+                suppName = "";
+            }
+        }
+
+        // add supplement cost
+        while (suppCost == 0.0) {
+            try {
+                System.out.print("Supplement's cost: ");
+                suppCost = Double.parseDouble(reader.readLine());
+            } catch (IOException | NumberFormatException e) {
+                System.out.println(e);
+                suppCost = 0.0;
+            }
+        }
+
+        addNewSupplement(suppName, suppCost);
+    }
     /**
      * Performs action designated to option.
      * @param {char} option
      */
     private void runOption(char option) {
-        // reset line from input from options prompt, otherwise nextLine is skipped.
-//        try {
-//            reader.readLine();
-//        }
-//        catch (IOException e) {
-//            System.out.println(e);
-//            this.promptMainOptions();
-//        }
 
         switch (option) {
             case '1':
-                System.out.println(magService.printWeeklyEmails());
+                printWeeklyEmails();
                 promptContinue();
                 break;
             case '2':
-                System.out.println(magService.printMonthlyEmails());
+                printMonthlyEmails();
                 promptContinue();
                 break;
             case '3':
@@ -721,17 +848,25 @@ public class Client {
                 promptAddPayingCustomer();
                 promptContinue();
                 break;
-//            case '5':
-//                promptRemoveAssociateCustomer();
-//                promptContinue();
-//                break;
-//            case '6':
-//                promptRemovePayingCustomer();
-//                promptContinue();
-//                break;
-//            case 'q':
-//                exitSystem();
-//                break;
+            case '5':
+                promptRemoveAssociateCustomer();
+                promptContinue();
+                break;
+            case '6':
+                promptRemovePayingCustomer();
+                promptContinue();
+                break;
+            case '7':
+                promptAddNewMagazine();
+                promptContinue();
+                break;
+            case '8':
+                promptAddNewSupplement();
+                promptContinue();
+                break;
+            case 'q':
+                System.exit(0);
+                break;
             default:
                 System.out.println("Information: Invalid option selected.");
                 break;
@@ -753,6 +888,8 @@ public class Client {
             System.out.println("[4] Add a paying customer.");
             System.out.println("[5] Remove an associate customer.");
             System.out.println("[6] Remove a paying customer.");
+            System.out.println("[7] Create New Magazine.");
+            System.out.println("[8] Create New Supplement.");
             System.out.println("[q] Exit the system.");
             System.out.println("-------------------------------------------------------");
 

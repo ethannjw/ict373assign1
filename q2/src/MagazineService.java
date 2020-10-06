@@ -48,7 +48,7 @@ public class MagazineService {
      * Adds a Magazine to the list of magazines
      * @param mag   A new instance of Magazine
      */
-    public boolean setMags(Magazine mag) {
+    public boolean setMagazine(Magazine mag) {
         if (this.mags.contains(mag)) {
             System.out.println("Cannot insert duplicate magazine!");
             return false;
@@ -84,6 +84,14 @@ public class MagazineService {
         }
         this.supplements.add(supplement);
         return true;
+    }
+
+    /**
+     * Get the list of supplements
+     * @return List<supplement>
+     */
+    public List<Supplement> getSupplements() {
+        return this.supplements;
     }
 
     /**

@@ -222,7 +222,7 @@ class ClientTest {
         assertEquals(testStr, client.getMagService().printWeeklyEmails());
     }
     /**
-     * Test case for part C: print out the text of all the emails for all customers for four weeks of magazines
+     * Test case for part C: print out the text of all the emails for one customer for four weeks of magazines
      */
     @org.junit.jupiter.api.Test
     void printWeeklyEmail() {
@@ -351,12 +351,16 @@ class ClientTest {
      */
     @org.junit.jupiter.api.Test
     void addNewAssociateCustomer() throws Customer.InvalidDetailException {
+        // Generate new customer
         AssociateCustomer testAssociateCustomer = new AssociateCustomer("Jonathan New", "Jonathan@email.com");
-        client.addNewAssociateCustomer("Jonathan New", "Jonathan@email.com");
+
+        // add the customer
+        assertTrue(client.addNewAssociateCustomer("Jonathan New", "Jonathan@email.com"));
 
         // check if the new customer is found
         assertTrue(client.getMagService().getAssociateCustomers().contains(testAssociateCustomer));
-
+        // clean up
+        client.removeAssociateCustomer("Jonathan New", "Jonathan@email.com");
     }
 
     /**
@@ -364,11 +368,14 @@ class ClientTest {
      */
     @org.junit.jupiter.api.Test
     void addNewPayingCustomer() throws Customer.InvalidDetailException{
+        // Generate new customer
         PayingCustomer testPayingCustomer = new PayingCustomer("Jonathan New", "Jonathan@email.com");
-        client.addNewPayingCustomer("Jonathan New", "Jonathan@email.com");
+        // add the customer
+        assertTrue(client.addNewPayingCustomer("Jonathan New", "Jonathan@email.com"));
         // check if the new customer is found
         assertTrue(client.getMagService().getMagPayingCustomers().contains(testPayingCustomer));
-
+        // clean up
+        client.removeAssociateCustomer("Jonathan New", "Jonathan@email.com");
     }
 
     /**
@@ -376,9 +383,11 @@ class ClientTest {
      */
     @org.junit.jupiter.api.Test
     void removeAssociateCustomer() throws Customer.InvalidDetailException{
+        // Generate a customer that is available in the init
         AssociateCustomer testAssociateCustomer = new AssociateCustomer("John Lim", "john.lim@email.com");
-        // remove customer
-        client.removeAssociateCustomer("John Lim", "john.lim@email.com");
+
+        // remove customer that exists as one of the customer in the init
+        assertTrue(client.removeAssociateCustomer("John Lim", "john.lim@email.com"));
 
         // check if the new customer is found after remove
         assertFalse(client.getMagService().getAssociateCustomers().contains(testAssociateCustomer));
@@ -389,12 +398,43 @@ class ClientTest {
      */
     @org.junit.jupiter.api.Test
     void removePayingCustomer() throws Customer.InvalidDetailException{
+        // Generate a customer that is available in the init
         PayingCustomer testPayingCustomer = new PayingCustomer("John Lim", "john.doe@email.com");
 
-        // remove customer
-        client.removePayingCustomer("John Lim", "john.doe@email.com");
+        // remove customer that exists as one of the customer in the init
+        assertTrue(client.removePayingCustomer("John Lim", "john.doe@email.com"));
 
         // check if the new customer is found after remove
         assertFalse(client.getMagService().getMagPayingCustomers().contains(testPayingCustomer));
+    }
+
+    /**
+     * Test case for part A: add an new supplement to magazine service
+     */
+    @org.junit.jupiter.api.Test
+    void addSupplement() {
+        // create a new supplement
+        Supplement newSupp = new Supplement("New Supplement", 12.43);
+
+        // add new supplement
+        assertTrue(client.addNewSupplement("New Supplement", 12.43));
+
+        // check if the new supplement is found after adding
+        assertTrue(client.getMagService().getSupplements().contains(newSupp));
+    }
+
+    /**
+     * Test case for part A: add an new magazine to magazine service
+     */
+    @org.junit.jupiter.api.Test
+    void addMagazine() {
+        // create a new supplement
+        Magazine newMag = new Magazine("New Magazine", 12.43);
+
+        // add new supplement
+        assertTrue(client.addNewMagazine("New Magazine", 12.43));
+
+        // check if the new supplement is found after adding
+        assertTrue(client.getMagService().getMagazines().contains(newMag));
     }
 }

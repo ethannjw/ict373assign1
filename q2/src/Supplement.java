@@ -91,4 +91,22 @@ public class Supplement {
                 "Cost: $" + supplementWeeklyCost +
                 "\n";
     }
+
+    /**
+     * Overrides the equals method to check for equality by checking the Name and cost
+     * @param otherSupplement     supplement class to be compared
+     * @return boolean    Returns true if both are equals, false if not
+     */
+    @Override
+    public boolean equals(Object otherSupplement) {
+        Supplement supplement = (Supplement) otherSupplement;
+
+        if (!supplement.getSupplementWeeklyCost().equals(this.supplementWeeklyCost)) {
+            return false;
+        }
+        if (!supplement.getSuppName().equalsIgnoreCase((this.suppName))) {
+            return false;
+        }
+        return true;
+    }
 }
