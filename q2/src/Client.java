@@ -135,14 +135,18 @@ public class Client {
     }
 
     /**
-     * Records the hardcoded weekly emails for all magazines and customers
+     * Records the hardcoded weekly emails for all magazines and customers so that the
+     * magazine information from previous magazines are not lost
      */
     private void recordWeeklyEmails() {
         for (Magazine mag : magService.getMagazines()) {
-            String weeklyEmail = magService.printWeeklyEmail(mag);
-            weeklyEmails.put(mag.getMagName(), weeklyEmail);
+            if (!weeklyEmails.containsKey(mag.getMagName())) {  // if the magazine is not already present
+                String weeklyEmail = magService.printWeeklyEmail(mag);
+                weeklyEmails.put(mag.getMagName(), weeklyEmail);
+            }
         }
     }
+
     /**
      * Records the hardcoded monthly emails for all paying customers
      */
@@ -402,15 +406,18 @@ public class Client {
                 System.out.println(e);
                 associateCustName = "";
             }
-            if ((associateCustomer = magService.getAssociateCustomer(associateCustName)) != null) {
-                payer.setAssociateCustomer(associateCustomer);
-                break;
-            } else {
+            if ((associateCustomer = magService.getAssociateCustomer(associateCustName)) == null) { // check if the customer exists
                 System.out.println("Customer " + associateCustName + " not found! Try Again!");
+                continue;
             }
+            payer.setAssociateCustomer(associateCustomer);
+            if (!magService.setMagPayingCustomer(payer)) {   // check if the customer has already been paid for
+                // error message printed by the setMagPayingCustomer method
+                payer.removeAssociateCustomer(associateCustomer);
+                continue;
+            }
+            break;  // if all pass then break out of while loop
         }
-
-        magService.setMagPayingCustomer(payer);
         System.out.println("Sucessfully added new paying customer");
     }
 
@@ -905,6 +912,8 @@ public class Client {
             }
             catch (IOException e) {
                 System.out.println(e);
+                this.promptMainOptions();
+            } catch (StringIndexOutOfBoundsException e) {
                 this.promptMainOptions();
             }
 

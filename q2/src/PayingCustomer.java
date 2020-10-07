@@ -74,7 +74,7 @@ public class PayingCustomer extends Customer {
 
     /**
      * Adds an Associate Customer
-     * @param associateCustomer AssociateCustomer
+     * @param associateCustomer AssociateCustomer to be added
      * @return boolean  Returns true if successful, false if not
      */
     public boolean setAssociateCustomer(AssociateCustomer associateCustomer)  {
@@ -87,6 +87,23 @@ public class PayingCustomer extends Customer {
         }
         this.associateCustomers.add(addId);
         return true;
+    }
+
+    /**
+     * Removes an Associate Customer
+     * @param associateCustomer AssociateCustomer to be removed
+     * @return boolean  Returns true if successful, false if not
+     */
+    public boolean removeAssociateCustomer(AssociateCustomer associateCustomer) {
+        int removeId = associateCustomer.getCustId();
+        for (Integer custId : this.associateCustomers) {
+            if (custId == removeId) {
+                this.associateCustomers.remove(associateCustomer);
+                return true;
+            }
+        }
+        System.out.println("Cannot find customer " + associateCustomer.getCustName() + " to remove");
+        return false;
     }
 
     /**
