@@ -31,6 +31,7 @@ public abstract class PaymentMethod {
      * Constructor
      * Initialises the payment method holder name
      * @param payerName           Name of payment method holder in String
+     * @throws InvalidDetailException   If name length is zero
      */
     public PaymentMethod(String payerName) throws InvalidDetailException{
         this.setPayerName(payerName);
@@ -48,6 +49,7 @@ public abstract class PaymentMethod {
      * Sets the payer name
      * @param payerName       The payer name string
      * @return boolean      Returns true if successful, false if not
+     * @throws InvalidDetailException   If name is having length zero
      */
     public Boolean setPayerName(String payerName) throws InvalidDetailException{
         if (payerName.length() > 0) {

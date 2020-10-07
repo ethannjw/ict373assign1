@@ -25,6 +25,7 @@ public class PayingCustomer extends Customer {
      * Constructor constructs the customer name and email
      * @param custName: String
      * @param custEmail: String
+     * @throws Customer.InvalidDetailException  Upon error
      */
     public PayingCustomer(String custName, String custEmail) throws InvalidDetailException{
         super(custName, custEmail);
@@ -42,6 +43,7 @@ public class PayingCustomer extends Customer {
      * Sets the payment method of credit card
      * @param creditCard    CreditCard class
      * @return boolean  Returns true if successful, false if not
+     * @throws Customer.InvalidDetailException  If the payment method already exists
      */
     public boolean setCreditCard(CreditCard creditCard) throws InvalidDetailException {
         if (this.paymentMethod != null) {
@@ -57,6 +59,7 @@ public class PayingCustomer extends Customer {
      * Sets the payment method of bank account
      * @param bankAccount: bank account class
      * @return boolean  Returns true if successful, false if not
+     * @throws Customer.InvalidDetailException  If the payment method already exists
      */
     public boolean setBankAccount(BankAccount bankAccount) throws InvalidDetailException{
         if (this.paymentMethod != null) {

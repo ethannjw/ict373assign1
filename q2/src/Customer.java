@@ -23,7 +23,6 @@ public abstract class Customer {
 
     /**
      * Invalid exception class that tells the user error message on invalid entry
-     * @param msg in String
      */
     static class InvalidDetailException extends Exception {
         public InvalidDetailException(String msg) {
@@ -44,6 +43,7 @@ public abstract class Customer {
      * Constructor constructs the customer name and email
      * @param custEmail String of customer email
      * @param custName  String of customer name
+     * @throws InvalidDetailException   if validation fails
      */
     protected Customer(String custName, String custEmail) throws InvalidDetailException {
         this.custId = nextId.incrementAndGet();
@@ -62,6 +62,7 @@ public abstract class Customer {
     /**
      * Sets the customer name
      * @param custName: String
+     * @throws InvalidDetailException   if name is length zero
      */
     protected void setCustName(String custName) throws InvalidDetailException {
         if (custName.length() > 0) {
@@ -82,6 +83,7 @@ public abstract class Customer {
     /**
      * Sets the customer email
      * @param custEmail: String
+     * @throws InvalidDetailException   if validation fails
      */
     protected void setCustEmail(String custEmail) throws InvalidDetailException {
         // Check if the email matches email format

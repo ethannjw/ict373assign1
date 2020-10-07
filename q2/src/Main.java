@@ -9,7 +9,10 @@
  */
 
 public class Main {
-
+    /**
+     * Main Method displays the Student details, runs the client and runs the menu
+     * @param args  Arguments
+     */
     public static void main(String[] args) {
         Client client = new Client();
         client.displayStudentDetails();

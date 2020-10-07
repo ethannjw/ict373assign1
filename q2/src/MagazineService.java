@@ -46,7 +46,8 @@ public class MagazineService {
 
     /**
      * Adds a Magazine to the list of magazines
-     * @param mag   A new instance of Magazine
+     * @param mag       A new instance of Magazine
+     * @return boolean  Return true if successful addition, false if unsuccessful
      */
     public boolean setMagazine(Magazine mag) {
         if (this.mags.contains(mag)) {
@@ -75,7 +76,8 @@ public class MagazineService {
 
     /**
      * Adds a supplement to the list of supplements
-     * @param supplement   A new instance of supplement
+     * @param supplement    A new instance of supplement
+     * @return boolean      True if the supplement is successfully added, false if not
      */
     public boolean setSupplement(Supplement supplement) {
         if (this.supplements.contains(supplement)) {
@@ -88,7 +90,7 @@ public class MagazineService {
 
     /**
      * Get the list of supplements
-     * @return List<supplement>
+     * @return The list of supplements
      */
     public List<Supplement> getSupplements() {
         return this.supplements;
@@ -96,8 +98,8 @@ public class MagazineService {
 
     /**
      * Get a supplement based on supplement ID
-     * @param supplementId
-     * @return supplement
+     * @param supplementId  The ID of the supplement
+     * @return supplement   The requested supplement object. Null if not found
      */
     public Supplement getSupplement(int supplementId) {
         for (Supplement s : this.supplements) {
@@ -111,6 +113,7 @@ public class MagazineService {
     /**
      * inserts a specified paying customer
      * @param payingCustomer    PayingCustomer
+     * @return boolean          true if successful insertion false if not
      */
     public boolean setMagPayingCustomer(PayingCustomer payingCustomer) {
         //check if there are duplicates and check if the Paying customer is already paying for someone that is being paid for
@@ -159,6 +162,7 @@ public class MagazineService {
 
     /**
      * Returns the AssociateCustomer based on name
+     * @param custName              Name of customer in String
      * @return associateCustomer    Returns the List of Associate Customers currently present
      */
     public AssociateCustomer getAssociateCustomer(String custName) {
@@ -243,6 +247,7 @@ public class MagazineService {
 
     /**
      * Public method that returns the weekly email for a specified magazine
+     * @param magazine      Magazine object which the email is to be generated
      * @return weeklyEmail  String of weekly email for magazine
      */
     public String printWeeklyEmail(Magazine magazine) {
@@ -311,7 +316,8 @@ public class MagazineService {
     }
     /**
      * Generates the monthly email for specified paying customer
-     * @return monthly email: String
+     * @param payingCustomer    Paying Customer for which the monthly email is to be generated
+     * @return String           Monthly Email in String
      */
     public String printMonthlyEmail(PayingCustomer payingCustomer) {
         String str = "";

@@ -188,8 +188,9 @@ public class Client {
     /**
      * Part E
      * Adds new associate customer with name and email as input
-     * @param custName: String
-     * @param custEmail: String
+     * @param custName  Customer name in String
+     * @param custEmail Customer email in String
+     * @return boolean  Return true if successful, false if not
      */
     public boolean addNewAssociateCustomer(String custName, String custEmail) {
         try{
@@ -206,8 +207,9 @@ public class Client {
     /**
      * Part E
      * Adds new paying customer with name and email as input
-     * @param custName: String
-     * @param custEmail: String
+     * @param custName      Customer name in String
+     * @param custEmail     Customer email in String
+     * @return boolean  Return true if successful, false if not
      */
     public boolean addNewPayingCustomer(String custName, String custEmail) {
         try {
@@ -224,8 +226,9 @@ public class Client {
     /**
      * Part F
      * Removes associate customer with name and email as input
-     * @param custName: String
-     * @param custEmail: String
+     * @param custName      Customer name in String
+     * @param custEmail     Customer email in String
+     * @return boolean  Return true if successful, false if not
      */
     public boolean removeAssociateCustomer(String custName, String custEmail) {
 
@@ -249,8 +252,9 @@ public class Client {
     /**
      * Part F
      * Removes paying customer with name and email as input
-     * @param custName: String
-     * @param custEmail: String
+     * @param custName  Customer name in String
+     * @param custEmail Customer email in String
+     * @return boolean  Return true if successful, false if not
      */
     public boolean removePayingCustomer(String custName, String custEmail) {
         List<PayingCustomer> cust = this.magService.getMagPayingCustomers();
@@ -727,8 +731,9 @@ public class Client {
     }
     /**
      * Adds a new supplement based on magazine name and weekly cost
-     * @param magName
-     * @param magWeeklyCost
+     * @param magName           Name of Magazine
+     * @param magWeeklyCost     Weekly cost of magazine in double
+     * @return boolean          True if successful addition, false if not
      */
     public boolean addNewMagazine(String magName, double magWeeklyCost) {
         // create the new supplement
@@ -776,8 +781,9 @@ public class Client {
     }
     /**
      * Adds a new supplement based on supplement name and supplenment cost
-     * @param suppName
-     * @param suppCost
+     * @param suppName  Name of supplement in String
+     * @param suppCost  Weekly cost of supplement in double
+     * @return boolean  True if successful addition, false if not
      */
     public boolean addNewSupplement(String suppName, double suppCost) {
         // create the new supplement

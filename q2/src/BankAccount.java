@@ -18,6 +18,7 @@ public class BankAccount extends PaymentMethod {
     /**
      * Constructor constructs the payer name
      * @param payerName         Payer name in non zero length string
+     * @throws PaymentMethod.InvalidDetailException If validation fails
      */
     public BankAccount(String payerName) throws InvalidDetailException{
         super(payerName);
@@ -27,6 +28,7 @@ public class BankAccount extends PaymentMethod {
      * @param payerName         Payer name in non zero length string
      * @param accountNumber     String (XXX-XXX-XXX) X: digits only
      * @param bankName              Name of Bank in string
+     * @throws PaymentMethod.InvalidDetailException If validation fails
      */
     public BankAccount(String payerName, String accountNumber, String bankName) throws InvalidDetailException {
         super(payerName);
@@ -37,6 +39,7 @@ public class BankAccount extends PaymentMethod {
      * Sets the bank account number
      * @param accountNumber          The bank account number string
      * @return boolean              Returns true if successful, false if not
+     * @throws PaymentMethod.InvalidDetailException if bank account number does not meet the format requirements
      */
     public boolean setAccountNumber(String accountNumber) throws InvalidDetailException{
         Matcher matcher = bankFormat.matcher(accountNumber);
@@ -52,6 +55,7 @@ public class BankAccount extends PaymentMethod {
      * Sets the bank name
      * @param bankName          The bank name string
      * @return boolean          Returns true if successful, false if not
+     * @throws PaymentMethod.InvalidDetailException If name is empty
      */
     public boolean setBankName(String bankName) throws InvalidDetailException{
         if (bankName.length() > 0) {

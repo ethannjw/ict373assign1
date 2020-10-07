@@ -62,6 +62,7 @@ public class Magazine {
     /**
      * Sets the magazine cost
      * @param magazineWeeklyCost    The magazine cost double
+     * @return boolean              Return successful if successful setting, false if not
      */
     public boolean setMagWeeklyCost(double magazineWeeklyCost) {
         if (magazineWeeklyCost > 0) {

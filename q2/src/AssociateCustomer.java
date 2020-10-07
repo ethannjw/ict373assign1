@@ -25,6 +25,7 @@ public class AssociateCustomer extends Customer{
      * Constructor constructs the customer name and email
      * @param custName  String
      * @param custEmail String
+     * @throws Customer.InvalidDetailException  If validation fails
      */
     public AssociateCustomer(String custName, String custEmail) throws InvalidDetailException{
         super(custName, custEmail);
@@ -49,7 +50,7 @@ public class AssociateCustomer extends Customer{
     }
     /**
      * Returns the list of supplements
-     * @return supplements  ArrayList<Integer> list of supplements
+     * @return supplements  list of supplements
      */
     public ArrayList<Integer> getSupplements() {
         return this.supplements;

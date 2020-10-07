@@ -23,6 +23,8 @@ public class CreditCard extends PaymentMethod {
     /**
      * Empty Constructor
      * Initialises the payment method holder name
+     * @param name  The name of owner of credit card
+     * @throws PaymentMethod.InvalidDetailException If any validation fail, such as name is empty
      */
     public CreditCard(String name) throws InvalidDetailException {
         super(name);
@@ -34,6 +36,7 @@ public class CreditCard extends PaymentMethod {
      * @param payerName         Payer name in non zero length string
      * @param creditCardNumber  String (XXXX-XXXX-XXXX-XXXX) X: digits only
      * @param expiry            LocalDate, usage, LocalDate.of(2023, 5, 1)
+     * @throws PaymentMethod.InvalidDetailException Upon Validation fail
      */
     public CreditCard(String payerName, String creditCardNumber, LocalDate expiry) throws InvalidDetailException{
         super(payerName);
@@ -60,6 +63,7 @@ public class CreditCard extends PaymentMethod {
      * Sets the credit card number
      * @param creditCardNumber       The credit card number string
      * @return boolean      Returns true if successful, false if not
+     * @throws PaymentMethod.InvalidDetailException If credit card format incorrect
      */
     public boolean setCreditCardNumber(String creditCardNumber) throws InvalidDetailException {
         Matcher matcher = ccFormat.matcher(creditCardNumber);
@@ -75,6 +79,7 @@ public class CreditCard extends PaymentMethod {
      * Sets the expiry date that must be in the future
      * @param expiry        The expiry date LocalDate
      * @return boolean      Returns true if successful, false if not
+     * @throws PaymentMethod.InvalidDetailException If the expiry date is before today
      */
     public Boolean setExpiry(LocalDate expiry) throws InvalidDetailException{
         LocalDate today = LocalDate.now();
