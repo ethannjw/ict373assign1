@@ -143,12 +143,13 @@ public class MagazineService {
      * inserts a specified associate customer
      * @param magCustomer   Insert an Associate Customer into the service
      */
-    public void setAssociateCustomer(AssociateCustomer magCustomer) {
-        if (!this.magCustomers.contains(magCustomer)) {
-            this.magCustomers.add(magCustomer);
-        } else {
+    public boolean setAssociateCustomer(AssociateCustomer magCustomer) {
+        if (this.magCustomers.contains(magCustomer)) {
             System.out.println("Cannot insert duplicate customer!");
+            return false;
         }
+        this.magCustomers.add(magCustomer);
+        return true;
 
     }
 

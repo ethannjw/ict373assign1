@@ -83,7 +83,7 @@ public class CreditCard extends PaymentMethod {
      */
     public Boolean setExpiry(LocalDate expiry) throws InvalidDetailException{
         LocalDate today = LocalDate.now();
-        if (expiry.isBefore(today)) {
+        if (expiry.isBefore(today) | expiry.equals(today)) {
             throw new InvalidDetailException("Expiry date must be in the future!");
 
         } else {

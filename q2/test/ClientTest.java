@@ -1,4 +1,5 @@
 import java.lang.management.ManagementFactory;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -347,20 +348,205 @@ class ClientTest {
     }
 
     /**
+     * Test case for paying customer class
+     */
+    @org.junit.jupiter.api.Test
+    void testPaymentMethod() throws PaymentMethod.InvalidDetailException {
+        LocalDate testLocalDate = LocalDate.of(2022, 9, 1);
+        CreditCard testCC = new CreditCard("NewCC", "1234-1234-1234-1234", testLocalDate);
+        BankAccount testBA = new BankAccount("NewBA", "123-123-123", "Test account");
+        PaymentMethod.InvalidDetailException thrown;
+
+        // test empty name entry for Credit card
+        thrown = assertThrows(PaymentMethod.InvalidDetailException.class, () -> testCC.setPayerName(""));
+        assertEquals("Name must be having a length of more than 1! Try again!", thrown.getMessage());
+
+        // test equals method
+        CreditCard test2CC = new CreditCard("NewCC", "1234-1234-1234-1234", testLocalDate);
+        assertEquals(testCC, test2CC);
+        CreditCard test3CC = new CreditCard("New2CC", "1454-1245-1245-1245", testLocalDate);
+        assertNotEquals(testCC, test3CC);
+
+        // test invalid entry for Credit card number
+        thrown = assertThrows(PaymentMethod.InvalidDetailException.class, () -> testCC.setCreditCardNumber(""));
+        assertEquals("Invalid credit card number! Format is XXXX-XXXX-XXXX-XXXX X: digits only", thrown.getMessage());
+        thrown = assertThrows(PaymentMethod.InvalidDetailException.class, () -> testCC.setCreditCardNumber("123-123-123"));
+        assertEquals("Invalid credit card number! Format is XXXX-XXXX-XXXX-XXXX X: digits only", thrown.getMessage());
+        thrown = assertThrows(PaymentMethod.InvalidDetailException.class, () -> testCC.setCreditCardNumber("1234-1234-1234-12a4"));
+        assertEquals("Invalid credit card number! Format is XXXX-XXXX-XXXX-XXXX X: digits only", thrown.getMessage());
+
+        // test invalid date for credit card
+        LocalDate testLocalDate2 = LocalDate.of(2020, 9, 1);
+        // test past date
+        thrown = assertThrows(PaymentMethod.InvalidDetailException.class, () -> testCC.setExpiry(testLocalDate2));
+        assertEquals("Expiry date must be in the future!", thrown.getMessage());
+        // test now date
+        LocalDate testLocalDate3 = LocalDate.now();
+        thrown = assertThrows(PaymentMethod.InvalidDetailException.class, () -> testCC.setExpiry(testLocalDate3));
+        assertEquals("Expiry date must be in the future!", thrown.getMessage());
+
+        // test invalid entry for Bank Account number
+        thrown = assertThrows(PaymentMethod.InvalidDetailException.class, () -> testBA.setAccountNumber(""));
+        assertEquals("Invalid Bank account number! Try again!", thrown.getMessage());
+        thrown = assertThrows(PaymentMethod.InvalidDetailException.class, () -> testBA.setAccountNumber("1454-1245-1245-1245"));
+        assertEquals("Invalid Bank account number! Try again!", thrown.getMessage());
+        thrown = assertThrows(PaymentMethod.InvalidDetailException.class, () -> testBA.setAccountNumber("1454-1245-12sa"));
+        assertEquals("Invalid Bank account number! Try again!", thrown.getMessage());
+
+        // test invalid entry for Bank name
+        thrown = assertThrows(PaymentMethod.InvalidDetailException.class, () -> testBA.setBankName(""));
+        assertEquals("Name must be having a length of more than 1! Try again!", thrown.getMessage());
+
+    }
+    /**
+     * Test case for paying customer class
+     */
+    @org.junit.jupiter.api.Test
+    void testPayingCustomer() throws PaymentMethod.InvalidDetailException, Customer.InvalidDetailException {
+        // Paying customer
+        PayingCustomer testPayingCustomer = new PayingCustomer();
+        Customer.InvalidDetailException thrown;
+        // assert Customer.InvalidDetailException if name is zero length
+        thrown = assertThrows(Customer.InvalidDetailException.class, () -> testPayingCustomer.setCustName(""));
+        assertEquals("Name must be having a length of more than 1! Try again!", thrown.getMessage());
+
+        // assert Customer.InvalidDetailException if email is zero length
+        thrown = assertThrows(Customer.InvalidDetailException.class, () -> testPayingCustomer.setCustEmail(""));
+        assertEquals("Invalid email! Try again!", thrown.getMessage());
+
+        // assert Customer.InvalidDetailException if email is invalid
+        thrown = assertThrows(Customer.InvalidDetailException.class, () -> testPayingCustomer.setCustEmail("1234"));
+        assertEquals("Invalid email! Try again!", thrown.getMessage());
+
+        thrown = assertThrows(Customer.InvalidDetailException.class, () -> testPayingCustomer.setCustEmail("asc#df.sdf"));
+        assertEquals("Invalid email! Try again!", thrown.getMessage());
+
+        thrown = assertThrows(Customer.InvalidDetailException.class, () -> testPayingCustomer.setCustEmail("asc&df"));
+        assertEquals("Invalid email! Try again!", thrown.getMessage());
+
+        thrown = assertThrows(Customer.InvalidDetailException.class, () -> testPayingCustomer.setCustEmail("asc.df"));
+        assertEquals("Invalid email! Try again!", thrown.getMessage());
+
+        LocalDate testLocalDate = LocalDate.of(2022, 9, 1);
+        CreditCard testCC = new CreditCard("NewCC", "1234-1234-1234-1234", testLocalDate);
+
+        // check credit card method
+        assertTrue(testPayingCustomer.setCreditCard(testCC));
+
+        // check if the payment method is updated
+        assertEquals(testCC, testPayingCustomer.getPaymentMethod());
+        // test duplicate entry of same credit card
+        thrown = assertThrows(Customer.InvalidDetailException.class, () -> testPayingCustomer.setCreditCard(testCC));
+        assertEquals("Payment Method already exists!", thrown.getMessage());
+
+        BankAccount testBA = new BankAccount("NewBA", "123-123-123", "Test account");
+
+        // check bank account method
+        assertTrue(testPayingCustomer.setBankAccount(testBA));
+
+        // check if the payment method is updated
+        assertEquals(testBA, testPayingCustomer.getPaymentMethod());
+
+        // test duplicate entry of same credit card
+        thrown = assertThrows(Customer.InvalidDetailException.class, () -> testPayingCustomer.setBankAccount(testBA));
+        assertEquals("Payment Method already exists!", thrown.getMessage());
+
+        AssociateCustomer testAC = new AssociateCustomer("Jonathan New", "Jonathan@email.com");
+
+        // test enter associate customer
+        assertTrue(testPayingCustomer.setAssociateCustomer(testAC));
+
+        // test duplicate associate customer
+        assertFalse(testPayingCustomer.setAssociateCustomer(testAC));
+    }
+    /**
+     * Test case for associate customer class
+     */
+    @org.junit.jupiter.api.Test
+    void testAssociateCustomer() throws Customer.InvalidDetailException {
+        // Associate customer
+        AssociateCustomer testAssociateCustomer2 = new AssociateCustomer();
+        Customer.InvalidDetailException thrown;
+        // assert Customer.InvalidDetailException if name is zero length
+        thrown = assertThrows(Customer.InvalidDetailException.class, () -> testAssociateCustomer2.setCustName(""));
+        assertEquals("Name must be having a length of more than 1! Try again!", thrown.getMessage());
+
+        // assert Customer.InvalidDetailException if email is zero length
+        thrown = assertThrows(Customer.InvalidDetailException.class, () -> testAssociateCustomer2.setCustEmail(""));
+        assertEquals("Invalid email! Try again!", thrown.getMessage());
+
+        // assert Customer.InvalidDetailException if email is invalid
+        thrown = assertThrows(Customer.InvalidDetailException.class, () -> testAssociateCustomer2.setCustEmail("1234"));
+        assertEquals("Invalid email! Try again!", thrown.getMessage());
+
+        thrown = assertThrows(Customer.InvalidDetailException.class, () -> testAssociateCustomer2.setCustEmail("asc#df.sdf"));
+        assertEquals("Invalid email! Try again!", thrown.getMessage());
+
+        thrown = assertThrows(Customer.InvalidDetailException.class, () -> testAssociateCustomer2.setCustEmail("asc&df"));
+        assertEquals("Invalid email! Try again!", thrown.getMessage());
+
+        thrown = assertThrows(Customer.InvalidDetailException.class, () -> testAssociateCustomer2.setCustEmail("asc.df"));
+        assertEquals("Invalid email! Try again!", thrown.getMessage());
+
+        // test supplement entry
+        Supplement testSupp = new Supplement("test Supplement", 123.3);
+
+        // test supplement entry
+        assertTrue(testAssociateCustomer2.setSupplement(testSupp));
+
+        // test duplicate supplement
+        assertFalse(testAssociateCustomer2.setSupplement(testSupp));
+    }
+
+    /**
      * Test case for part E: add a new customer to the magazine service
      */
     @org.junit.jupiter.api.Test
     void addNewAssociateCustomer() throws Customer.InvalidDetailException {
+        //Test successful add
         // Generate new customer
         AssociateCustomer testAssociateCustomer = new AssociateCustomer("Jonathan New", "Jonathan@email.com");
-
         // add the customer
         assertTrue(client.addNewAssociateCustomer("Jonathan New", "Jonathan@email.com"));
-
         // check if the new customer is found
         assertTrue(client.getMagService().getAssociateCustomers().contains(testAssociateCustomer));
         // clean up
         client.removeAssociateCustomer("Jonathan New", "Jonathan@email.com");
+
+        // Test add duplicate customer
+        assertFalse(client.addNewAssociateCustomer("John Lim", "john.lim@email.com"));
+
+        // Test add empty customer name
+        assertFalse(client.addNewAssociateCustomer("", "Jonathan@email.com"));
+
+        // test add empty customer email
+        assertFalse(client.addNewAssociateCustomer("Jonathan New", ""));
+
+        // test add invalid customer email
+        assertFalse(client.addNewAssociateCustomer("Jonathan New", "123.sd.com"));
+
+        AssociateCustomer testAssociateCustomer2 = new AssociateCustomer();
+        Customer.InvalidDetailException thrown;
+        // assert Customer.InvalidDetailException if name is zero length
+        thrown = assertThrows(Customer.InvalidDetailException.class, () -> testAssociateCustomer2.setCustName(""));
+        assertEquals("Name must be having a length of more than 1! Try again!", thrown.getMessage());
+
+        // assert Customer.InvalidDetailException if email is zero length
+        thrown = assertThrows(Customer.InvalidDetailException.class, () -> testAssociateCustomer2.setCustEmail(""));
+        assertEquals("Invalid email! Try again!", thrown.getMessage());
+
+        // assert Customer.InvalidDetailException if email is invalid
+        thrown = assertThrows(Customer.InvalidDetailException.class, () -> testAssociateCustomer2.setCustEmail("1234"));
+        assertEquals("Invalid email! Try again!", thrown.getMessage());
+
+        thrown = assertThrows(Customer.InvalidDetailException.class, () -> testAssociateCustomer2.setCustEmail("asc#df.sdf"));
+        assertEquals("Invalid email! Try again!", thrown.getMessage());
+
+        thrown = assertThrows(Customer.InvalidDetailException.class, () -> testAssociateCustomer2.setCustEmail("asc&df"));
+        assertEquals("Invalid email! Try again!", thrown.getMessage());
+
+        thrown = assertThrows(Customer.InvalidDetailException.class, () -> testAssociateCustomer2.setCustEmail("asc.df"));
+        assertEquals("Invalid email! Try again!", thrown.getMessage());
     }
 
     /**

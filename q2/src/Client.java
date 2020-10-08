@@ -17,6 +17,8 @@ import java.util.List;
  * @version 0.1
  * @date    01/10/2020
  * @author  Ethan Ng
+ * // TODO: 10/8/2020 When entering paying customer, add return option to allow user to return to main menu if the
+ *          associate customer cannot be found
  */
 
 public class Client {
@@ -197,10 +199,14 @@ public class Client {
      * @return boolean  Return true if successful, false if not
      */
     public boolean addNewAssociateCustomer(String custName, String custEmail) {
-        try{
+        try {
             AssociateCustomer newCust = new AssociateCustomer(custName, custEmail);
-            this.magService.setAssociateCustomer(newCust);
-            return true;
+            if (this.magService.setAssociateCustomer(newCust)) {
+                return true;
+            } else {
+                System.out.println("Adding customer failed!");
+                return false;
+            }
         }
         catch (Customer.InvalidDetailException e) {
             System.out.println("Adding customer failed!");
@@ -242,6 +248,21 @@ public class Client {
                 // Found customer to delete
                 if (this.magService.remCustomer(c)) {
                     System.out.println("Successfully removed customer: " + c.getCustName() + "\n");
+                    // need to find the paying customer that is paying for this customer and update as well.
+                    for (PayingCustomer payer : this.magService.getMagPayingCustomers()) {  // each paying customer
+                        for (Integer payerAssociateCust : payer.getAssociateCustomers()) {  // each associate customer in payer
+                            if (c.getCustId() == payerAssociateCust) {
+                                // remove the associate customer the payer is paying for
+                                if(payer.removeAssociateCustomer(c)) {
+                                    System.out.println("Updated payer: " + payer.getCustName() + " removed " + c.getCustName() + " as one if its associate customer");
+                                    return true;
+                                } else {
+                                    System.out.println("Tried to remove associate customer: " + c.getCustName() + " from " + payer.getCustName() + " but not successful");
+                                }
+                            }
+                        }
+                    }
+                    System.out.println("Associate customer: " + c.getCustName() + "is not being paid for by anyone, nothing to remove");
                     return true; // customer removal success
                 } else {
                     System.out.println("Unable to remove customer: " + c.getCustName());

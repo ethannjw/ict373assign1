@@ -77,7 +77,7 @@ public class PayingCustomer extends Customer {
      * @param associateCustomer AssociateCustomer to be added
      * @return boolean  Returns true if successful, false if not
      */
-    public boolean setAssociateCustomer(AssociateCustomer associateCustomer)  {
+    public boolean setAssociateCustomer(AssociateCustomer associateCustomer) {
         int addId = associateCustomer.getCustId();
         for (Integer custId : this.associateCustomers) {
             if (custId == addId) {

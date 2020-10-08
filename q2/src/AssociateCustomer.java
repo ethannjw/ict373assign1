@@ -27,7 +27,7 @@ public class AssociateCustomer extends Customer{
      * @param custEmail String
      * @throws Customer.InvalidDetailException  If validation fails
      */
-    public AssociateCustomer(String custName, String custEmail) throws InvalidDetailException{
+    public AssociateCustomer(String custName, String custEmail) throws InvalidDetailException {
         super(custName, custEmail);
         this.supplements = new ArrayList<Integer>();
     }
@@ -41,7 +41,7 @@ public class AssociateCustomer extends Customer{
         int addId = supplement.getSuppId();
         for (Integer custId : this.supplements) {
             if (custId == addId) {
-                System.out.println("Duplicate supplement customer! Cannot insert");
+                System.out.println("Duplicate supplement! Cannot insert");
                 return false;
             }
         }
