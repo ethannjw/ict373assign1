@@ -253,7 +253,7 @@ public class Client {
                         for (Integer payerAssociateCust : payer.getAssociateCustomers()) {  // each associate customer in payer
                             if (c.getCustId() == payerAssociateCust) {
                                 // remove the associate customer the payer is paying for
-                                if(payer.removeAssociateCustomer(c)) {
+                                if (payer.removeAssociateCustomer(c)) {
                                     System.out.println("Updated payer: " + payer.getCustName() + " removed " + c.getCustName() + " as one if its associate customer");
                                     return true;
                                 } else {

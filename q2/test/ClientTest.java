@@ -348,6 +348,48 @@ class ClientTest {
     }
 
     /**
+     * Test case for magazine class
+     */
+    @org.junit.jupiter.api.Test
+    void testMagazine() {
+        Magazine testMag = new Magazine("test Magazine", 123.3);
+
+        // test get magazine name
+        assertEquals("test Magazine", testMag.getMagName());
+
+        // test get magazine weekly cost
+        assertEquals(123.3, testMag.getMagWeeklyCost());
+
+        // test invalid name
+        assertFalse(testMag.setMagName(""));
+
+        // test invalid float
+        assertFalse(testMag.setMagWeeklyCost(-1.3));    // negative
+        assertFalse(testMag.setMagWeeklyCost((double)0));   // zero
+    }
+
+    /**
+     * Test case for supplement class
+     */
+    @org.junit.jupiter.api.Test
+    void testSupplement() {
+        Supplement testSupp = new Supplement("test Supplement", 123.3);
+
+        // test get supplement name
+        assertEquals("test Supplement", testSupp.getSuppName());
+
+        // test get supplement weekly cost
+        assertEquals(123.3, testSupp.getSupplementWeeklyCost());
+
+        // test invalid name
+        assertFalse(testSupp.setSuppName(""));
+
+        // test invalid float
+        assertFalse(testSupp.setSupplementWeeklyCost(-1.3));    // negative
+        assertFalse(testSupp.setSupplementWeeklyCost((double)0));   // zero
+    }
+
+    /**
      * Test case for paying customer class
      */
     @org.junit.jupiter.api.Test
@@ -458,6 +500,11 @@ class ClientTest {
 
         // test duplicate associate customer
         assertFalse(testPayingCustomer.setAssociateCustomer(testAC));
+
+        // test equals method
+        PayingCustomer testPayingCustomer2 = new PayingCustomer("New customer 2", "test@email.com");
+        PayingCustomer testPayingCustomer3 = new PayingCustomer("New customer 2", "test@email.com");
+        assertEquals(testPayingCustomer2, testPayingCustomer3);
     }
     /**
      * Test case for associate customer class
@@ -496,6 +543,11 @@ class ClientTest {
 
         // test duplicate supplement
         assertFalse(testAssociateCustomer2.setSupplement(testSupp));
+
+        // test equals method
+        AssociateCustomer testAssociateCustomer3 = new AssociateCustomer("New customer 2", "test@email.com");
+        AssociateCustomer testAssociateCustomer4 = new AssociateCustomer("New customer 2", "test@email.com");
+        assertEquals(testAssociateCustomer3, testAssociateCustomer4);
     }
 
     /**
@@ -571,12 +623,19 @@ class ClientTest {
     void removeAssociateCustomer() throws Customer.InvalidDetailException{
         // Generate a customer that is available in the init
         AssociateCustomer testAssociateCustomer = new AssociateCustomer("John Lim", "john.lim@email.com");
+        Integer testAssociateCustomerId = client.getMagService().getAssociateCustomer("John Lim").getCustId();
+        PayingCustomer testPayer = client.getMagService().getMagPayingCustomer("John Lim");
+        // check if the paying customer for testAssociateCustomer is removed
+        assertEquals(testAssociateCustomerId,testPayer.getAssociateCustomers().get(0));
 
         // remove customer that exists as one of the customer in the init
         assertTrue(client.removeAssociateCustomer("John Lim", "john.lim@email.com"));
 
         // check if the new customer is found after remove
         assertFalse(client.getMagService().getAssociateCustomers().contains(testAssociateCustomer));
+
+        // check if the paying customer for testAssociateCustomer is removed
+        assertTrue(testPayer.getAssociateCustomers().isEmpty());
     }
 
     /**

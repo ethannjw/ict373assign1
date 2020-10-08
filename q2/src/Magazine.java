@@ -52,10 +52,10 @@ public class Magazine {
     public boolean setMagName(String magName) {
         if (magName.length() > 0) {
             this.magName = magName;
-            return false;
+            return true;
         } else {
             System.out.println("Name must be having a length of more than 1! Try again!");
-            return true;
+            return false;
         }
     }
 

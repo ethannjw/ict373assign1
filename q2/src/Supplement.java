@@ -76,7 +76,7 @@ public class Supplement {
             this.supplementWeeklyCost = supplementWeeklyCost;
             return true;
         } else {
-            System.out.println("Supplement Weekly Cost cannot be negative!");
+            System.out.println("Supplement Weekly Cost cannot be negative or zero!");
             return false;
         }
     }

@@ -75,6 +75,21 @@ public class MagazineService {
     }
 
     /**
+     * Returns the Paying customer with name pass in as parameter
+     * @param custName          The name of the customer
+     * @return payingCustomers  The list of of paying customers currently present, empty list or null if not found
+     */
+    public PayingCustomer getMagPayingCustomer(String custName) {
+        for (PayingCustomer customer: this.magPayingCustomers) {
+            if (customer.getCustName().equalsIgnoreCase(custName)) {
+                return customer;
+            }
+        }
+        return null;
+    }
+
+
+    /**
      * Adds a supplement to the list of supplements
      * @param supplement    A new instance of supplement
      * @return boolean      True if the supplement is successfully added, false if not
