@@ -750,13 +750,22 @@ public class Client {
             payer = promptAddPayingCustomer(custName, custEmail);
             // store the associate customer in the payer
             payer.setAssociateCustomer(associateCustomer);
-            magService.setMagPayingCustomer(payer);
+            if (magService.setMagPayingCustomer(payer)) {
+                System.out.println("Payer Customer added.");
+            } else {
+                System.out.println("Payer Customer not added.");
+            }
         }
 
         // record the associate customer
-        magService.setAssociateCustomer(associateCustomer);
 
-        System.out.println("** Customer added.");
+        if (magService.setAssociateCustomer(associateCustomer)) {
+            System.out.println("Associate Customer added.");
+        } else {
+            System.out.println("Associate Customer not added.");
+        }
+
+
     }
     /**
      * Adds a new supplement based on magazine name and weekly cost
