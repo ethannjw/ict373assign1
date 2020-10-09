@@ -295,10 +295,11 @@ class ClientTest {
                 "\tHere is a list of customers you paying for: \n" +
                 "\tCustomer: John Lim\n" +
                 "\t\tJava Rocks Cost: $32.32\n" +
-                "\t\tWooHoo Cost: $12.3\n" +
+                "\t\tWooHoo Cost: $12.30\n" +
                 "\tFor this month: \n" +
-                "\tTotal subscription bill (main magazine part): $48.8\n" +
-                "\tTotal Bill: $93.42\n" +
+                "\tTotal subscription bill (main magazine part): $48.80\n" +
+                "\tTotal subscription bill (supplements): $178.48\n" +
+                "\tTotal Bill: $227.28\n" +
                 "\tPayment will be deducted end of the month from credit card:\n" +
                 "\t\tCredit Card Holder Name: Lim Swee Keat\n" +
                 "\t\tCredit Card Number: 1234 5678 9102 1234\n" +
@@ -313,10 +314,11 @@ class ClientTest {
                 "\tHere is a list of customers you paying for: \n" +
                 "\tCustomer: Jayne Petersen\n" +
                 "\t\tJava Rocks Cost: $32.32\n" +
-                "\t\tThe Grind Cost: $2.5\n" +
+                "\t\tThe Grind Cost: $2.50\n" +
                 "\tFor this month: \n" +
-                "\tTotal subscription bill (main magazine part): $48.8\n" +
-                "\tTotal Bill: $83.62\n" +
+                "\tTotal subscription bill (main magazine part): $48.80\n" +
+                "\tTotal subscription bill (supplements): $139.28\n" +
+                "\tTotal Bill: $188.08\n" +
                 "\tPayment will be deducted end of the month from credit card:\n" +
                 "\t\tCredit Card Holder Name: Tim Petersen\n" +
                 "\t\tCredit Card Number: 1234 9851 4592 1984\n" +
@@ -332,13 +334,14 @@ class ClientTest {
                 "\tCustomer: Brian Meadows\n" +
                 "\t\tGo Lang! Cost: $2.34\n" +
                 "\t\tJava Rocks Cost: $32.32\n" +
-                "\t\tThe Grind Cost: $2.5\n" +
-                "\t\tWooHoo Cost: $12.3\n" +
+                "\t\tThe Grind Cost: $2.50\n" +
+                "\t\tWooHoo Cost: $12.30\n" +
                 "\tCustomer: Chloe-Ann Manning\n" +
-                "\t\tWooHoo Cost: $12.3\n" +
+                "\t\tWooHoo Cost: $12.30\n" +
                 "\tFor this month: \n" +
-                "\tTotal subscription bill (main magazine part): $97.6\n" +
-                "\tTotal Bill: $159.35999999999999\n" +
+                "\tTotal subscription bill (main magazine part): $97.60\n" +
+                "\tTotal subscription bill (supplements): $247.04\n" +
+                "\tTotal Bill: $344.64\n" +
                 "\tPayment will be deducted end of the month from bank account:\n" +
                 "\t\tAccount Holder Name: Alan Burnett\n" +
                 "\t\tBank Name: ABC Bank\n" +
@@ -366,6 +369,10 @@ class ClientTest {
         // test invalid float
         assertFalse(testMag.setMagWeeklyCost(-1.3));    // negative
         assertFalse(testMag.setMagWeeklyCost((double)0));   // zero
+
+        // test get Month method
+        LocalDate today = LocalDate.now();
+        assertEquals(today.getMonth().getValue(), testMag.getMagMonth());
     }
 
     /**
@@ -625,6 +632,7 @@ class ClientTest {
         AssociateCustomer testAssociateCustomer = new AssociateCustomer("John Lim", "john.lim@email.com");
         Integer testAssociateCustomerId = client.getMagService().getAssociateCustomer("John Lim").getCustId();
         PayingCustomer testPayer = client.getMagService().getMagPayingCustomer("John Lim");
+
         // check if the paying customer for testAssociateCustomer is removed
         assertEquals(testAssociateCustomerId,testPayer.getAssociateCustomers().get(0));
 

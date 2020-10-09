@@ -1,4 +1,5 @@
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -33,7 +34,7 @@ public class MagazineService {
         magCustomers = new ArrayList<AssociateCustomer>();
         magPayingCustomers = new ArrayList<PayingCustomer>();
         supplements = new ArrayList<Supplement>();
-        total = new Total(0.0);
+        total = new Total();
     }
 
     /**
@@ -230,36 +231,6 @@ public class MagazineService {
             return false;
         }
     }
-    /**
-     * Wrapper class that allows storing of a total variable assessable within this class.
-     * Used for calculating the total cost of the customers
-     * Consists of get and set method for a double variable
-     * Consists of .add() method to add and .zero() to reset the total back to zero
-     */
-    private class Total {
-        private double total;
-        public Total(double total) {
-            this.total = total;
-        }
-        public String toString(){
-            return String.valueOf(this.total);
-        }
-
-        public void setTotal(double total) {
-            this.total = total;
-        }
-
-        public double getTotal() {
-            return total;
-        }
-
-        public void add(double otherDouble) {
-            this.total += otherDouble;
-        }
-        public void zero(){
-            this.total = 0.0;
-        }
-    }
 
     /**
      * Public method that returns the weekly email for a specified magazine
@@ -319,16 +290,68 @@ public class MagazineService {
         }
         return str; // return printWeeklyEmail(String magName)
     }
+
     /**
-     * Get the monthly bill that sums all the subscription costs of each magazine
-     * @return total: double
+     * Wrapper class that allows storing of a subscription and supplement totals assessable within this class.
+     * Used for calculating and displaying customer costs
+     * Consists of number of week (default 4) and number of associate customer (default 1) with corresponding set methods
+     * Consists of get and set method for subscriptions and supplements double variables
+     * Consists of .zero() to reset the values back to zero
      */
-    private double getBillsForMonth() {
-        double magWeeklyCost = 0.0;
-        for (Magazine m : mags) {
-            magWeeklyCost += m.getMagWeeklyCost();
+    private class Total {
+        private int numAssociateCustomers = 1;
+        private double subscriptions;
+        private int numWeek = 4;
+        private double supplements;
+
+        public Total() {
+            subscriptions = 0;
+            supplements = 0;
         }
-        return magWeeklyCost;
+        public double getTotalSupplements() {
+            return (supplements*numWeek);
+        }
+        public double getTotalSubscriptions() {
+            return (subscriptions*numAssociateCustomers);
+        }
+        public double getTotal() {
+            return getTotalSubscriptions() + getTotalSupplements();
+        }
+        public void setNumWeek(int numWeek){
+            this.numWeek = numWeek;
+        }
+        public void setNumAssociateCustomers(int numAssociateCustomers){
+            this.numAssociateCustomers = numAssociateCustomers;
+        }
+        public void addSubscription(double subscriptionCost) {
+            this.subscriptions += subscriptionCost;
+        }
+        public void addSupplement(double supplementCost) {
+            this.supplements += (supplementCost);
+        }
+        public void zero(){
+            this.subscriptions = 0.0;
+            this.supplements = 0.0;
+        }
+    }
+
+    /**
+     * Adds the bills for last month that sums all the subscription costs of each magazine
+     * This is meant for calculating the total cost for each paying customer in printMonthlyEmail(PayingCustomer payingCustomer)
+     * @return total number of weeks of last month
+     */
+    private int getSubscriptionsForLastMonth() {
+        double subscriptionTotal = 0.0;
+        int numWeeks = 0;
+        LocalDate today = LocalDate.now();
+        for (Magazine m : mags) {
+            if (m.getMagMonth() == (today.getMonthValue()-1)) { // loop through only last month emails
+                subscriptionTotal += (m.getMagWeeklyCost());
+                numWeeks += 1;
+            }
+        }
+        total.addSubscription(subscriptionTotal);
+        return numWeeks;
     }
     /**
      * Generates the monthly email for specified paying customer
@@ -338,9 +361,14 @@ public class MagazineService {
     public String printMonthlyEmail(PayingCustomer payingCustomer) {
         String str = "";
         Supplement currentSupp;
+        int numWeeks = 0;
         // initialise the global variable total to zero to start
         total.zero();
-        int numAssociateCustomer = payingCustomer.getAssociateCustomers().size();
+        total.setNumAssociateCustomers(payingCustomer.getAssociateCustomers().size());
+        // add to the total the total subscription for a month times total number of associate customers
+        numWeeks = getSubscriptionsForLastMonth();
+        total.setNumWeek(numWeeks);
+
         str = str.concat("From: billing@scammagazines.com\n");
         str = str.concat("Recipient: " + payingCustomer.getCustEmail() + "\n");
         str = str.concat("Subject:\n");
@@ -349,17 +377,14 @@ public class MagazineService {
         str = str.concat("Dear " + payingCustomer.getCustName() + ",\n");
         str = str.concat("\tHere is a list of customers you paying for: \n");
 
-        // print the paying customer supplement
+        // print the paying customer supplement, and also add the supplement cost
         str = str.concat(printPayingCustomerSupplement(payingCustomer));
-
-        // add to the total the total subscription for a month times total number of associate customers
-        double subscriptionTotal = getBillsForMonth() * numAssociateCustomer;
-        total.add(subscriptionTotal);
 
         // prints the total bill
         str = str.concat("\tFor this month: \n");
-        str = str.concat("\tTotal subscription bill (main magazine part): $" + subscriptionTotal + "\n");
-        str = str.concat("\tTotal Bill: $" + total + "\n");
+        str = str.concat("\tTotal subscription bill (main magazine part): $" + String.format("%.2f", total.getTotalSubscriptions()) + "\n");
+        str = str.concat("\tTotal subscription bill (supplements): $" + String.format("%.2f", total.getTotalSupplements()) + "\n");
+        str = str.concat("\tTotal Bill: $" + String.format("%.2f", total.getTotal()) + "\n");
         //print out the payment details
         PaymentMethod paymentMethod = payingCustomer.getPaymentMethod();
         if (paymentMethod instanceof BankAccount) {
@@ -398,7 +423,8 @@ public class MagazineService {
         return str;
     }
     /**
-     * Generates the supplements for each associate customer for specified paying customer
+     * Generates the supplements for each associate customer for specified paying customer, while also adding the
+     * supplement cost into total
      * @param associateCustomer associate customer to print
      * @param printCost     true/false sums up the cost to the total private class and prints the cost of supplement for each
      * @return text of all associate customer supplements in String
@@ -411,9 +437,9 @@ public class MagazineService {
                 if (s.getSuppId() == supplementId) {
                     // prints each supplement and their cost
                     if (printCost) {
-                        str = str.concat("\t\t" + s.getSuppName() + " Cost: $" + s.getSupplementWeeklyCost() + "\n");
+                        str = str.concat("\t\t" + s.getSuppName() + " Cost: $" + String.format("%.2f", s.getSupplementWeeklyCost()) + "\n");
                         // add each subscription cost to total
-                        total.add(s.getSupplementWeeklyCost());
+                        total.addSupplement(s.getSupplementWeeklyCost());
                     } else {
                         str = str.concat("\t\t" + s.getSuppName() + "\n");
                     }

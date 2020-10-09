@@ -1,5 +1,4 @@
-
-import java.util.concurrent.atomic.AtomicInteger;
+import java.time.LocalDate;
 
 /**
  * @title       Magazine
@@ -11,8 +10,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 
 public class Magazine {
-    private static AtomicInteger nextId = new AtomicInteger();
-    private int magId;
+    private int magMonth;
     private String magName;
     private double magWeeklyCost;
 
@@ -23,7 +21,21 @@ public class Magazine {
      * @param magWeeklyCost     Weekly cost of magazine in double
      */
     public Magazine(String magName, double magWeeklyCost) {
-        this.magId = nextId.incrementAndGet();
+        LocalDate today = LocalDate.now();
+        this.magMonth = today.getMonth().getValue();
+        this.setMagName(magName);
+        this.setMagWeeklyCost(magWeeklyCost);
+    }
+
+    /**
+     * Constructor
+     * Initialises the magazine id, magazine name and magazine cost
+     * @param magName           Name of magazine in String
+     * @param magWeeklyCost     Weekly cost of magazine in double
+     * @param magMonth          Month that magazine belongs to
+     */
+    public Magazine(String magName, double magWeeklyCost, int magMonth) {
+        this.magMonth = magMonth;
         this.setMagName(magName);
         this.setMagWeeklyCost(magWeeklyCost);
     }
@@ -32,8 +44,8 @@ public class Magazine {
      * Retrieves the magId
      * @return magId    The magazine unique identifier
      */
-    public int getMagId() {
-        return magId;
+    public int getMagMonth() {
+        return magMonth;
     }
 
     /**
@@ -89,7 +101,7 @@ public class Magazine {
     @Override
     public String toString() {
         return "Magazine: \n" +
-                "magazine ID: " + magId + '\n' +
+                "magazine ID: " + magMonth + '\n' +
                 "magazine Name: " + magName + '\n' +
                 "magazine Weekly Cost: $" + magWeeklyCost + '\n' +
                 "Customers: " + '\n';

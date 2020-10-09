@@ -69,13 +69,14 @@ public class Client {
      * @return MagazineService
      */
     public static MagazineService generateMagazineService() {
+        LocalDate today = LocalDate.now();
         MagazineService s = new MagazineService();
         try {
             // Part A: Construct Magazine
-            Magazine mag1 = new Magazine("Programming Magazine", 12.20);
-            Magazine mag2 = new Magazine("Cooking Magazine", 12.20);
-            Magazine mag3 = new Magazine("Exercise Magazine", 12.20);
-            Magazine mag4 = new Magazine("Empty Magazine", 12.20);
+            Magazine mag1 = new Magazine("Programming Magazine", 12.20, (today.getMonthValue()-1));
+            Magazine mag2 = new Magazine("Cooking Magazine", 12.20, (today.getMonthValue()-1));
+            Magazine mag3 = new Magazine("Exercise Magazine", 12.20, (today.getMonthValue()-1));
+            Magazine mag4 = new Magazine("Empty Magazine", 12.20, (today.getMonthValue()-1));
 
             s.setMagazine(mag1);
             s.setMagazine(mag2);
