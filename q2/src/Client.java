@@ -23,7 +23,6 @@ import java.util.List;
 
 public class Client {
     private char userInput;
-    private Boolean runSystem;
     private static final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
     private MagazineService magService;
     private HashMap<String, String> weeklyEmails;
@@ -33,10 +32,8 @@ public class Client {
      * Generates a new MagazineService with 7 customers and 4 supplements
      */
     public Client() {
-        runSystem = true;
         userInput = '\0';
         magService = generateMagazineService();
-
         weeklyEmails = new HashMap<String, String>();
         monthlyEmails = new HashMap<Integer, String>();
         this.recordWeeklyEmails();
@@ -922,7 +919,7 @@ public class Client {
      * Display program's main options.
      */
     public void promptMainOptions() {
-        while (runSystem) {
+        while (true) {
             System.out.println("-------------------------------------------------------");
             System.out.println("Welcome to the Scam Magazines management system.");
             System.out.println("Please select an option below:");
